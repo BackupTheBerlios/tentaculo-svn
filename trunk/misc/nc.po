@@ -1,0 +1,41 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Diego Andrés Asenjo G. <dasenjo@unicauca.edu.co>
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: dasenjo@unicauca.edu.co\n"
+"POT-Creation-Date: 2005-08-25 17:52-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../lib/Template.pm:24
+msgid "Successful change"
+msgstr "Cambio exitoso"
+
+#: ../lib/Template.pm:26
+msgid "The general configuration has been changed successfully"
+msgstr "Se ha cambiado la Configuración General del sistema"
+
+#: ../lib/Template.pm:28
+msgid "The cache configuration has been changed successfully"
+msgstr ""
+
+#: ../lib/Template.pm:31
+msgid "Unsuccessful change"
+msgstr ""
+
+#: ../lib/Template.pm:32
+msgid "There was a problem trying to change the information. Please try again."
+msgstr ""
+
+#: ../lib/Template.pm:83
+msgid "Username and/or password incorrect"
+msgstr ""

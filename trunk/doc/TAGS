@@ -1,0 +1,17 @@
+This file document the tags suppported in the system.
+
+* Tags suppported:
+General: http_port, visible_hostname
+Squid recommended: hierarchy_stoplist, no_cache
+Peers: icp_port, cache_peer
+Cache: cache_mem, cache_dir
+Access Control: acl, http_access, icp_access
+Delay Pools: delay_pools, delay_class, delay_access, delay_parameters
+
+* Tags and tables in the DB:
+General: general
+Recomendadas: not in db (hardcoded)
+Vecinos: general, cache_peer
+Cache: general, cache_dir
+Control de acceso: acl, access
+Delay Pools: delay_pool, delay_access

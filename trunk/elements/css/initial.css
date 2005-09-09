@@ -1,0 +1,101 @@
+body
+{
+	font-family:Arial, Helvetica, sans-serif;
+	margin:0;
+	padding:0;
+	background:url("../imgs/body.jpg") #CCCCCC repeat-x left top;
+	text-align:center;
+}
+	#initialPage
+	{
+		width:500px;
+		margin:10px auto 10px auto;
+		text-align:left;
+	}
+		#initialTitle
+		{
+			width:500px;
+			background:url("../imgs/i_title.gif") left top no-repeat;
+			text-align:center;
+			float:left;
+		}
+			#initialTitle h1
+			{
+				margin:0;
+				padding:10px 10px 5px 10px;
+				font-size:16px;
+				color:#FF0000;
+			}
+		#initialContent
+		{
+			float:left;
+			width:500px;
+			background:url("../imgs/i_content.gif") left top repeat-y;
+		}
+			#initialContent fieldset
+			{
+				border:none;
+				margin:0 30px 0 30px;
+				padding:0;
+			}
+				#initialContent #logForm p
+				{
+					font-size:12px;
+					color:#333333;
+					padding:0 0 10px 0;
+					margin:0;
+				}
+					#logForm input
+					{
+						font-size:12px;
+						letter-spacing:1px;
+						color:#000000;
+						padding:1px 4px 1px 4px;
+						width:250px;
+					}
+					#logForm #logUser
+					{
+						margin:0 0 0 50px;
+					}
+					#logForm #logPass
+					{
+						margin:0 0 0 30px;
+					}
+				#initialContent #logSubmit p
+				{
+					text-align:center;
+					margin:0;
+					padding:0;
+				}
+					#initialContent #logSubmit p input
+					{
+						font-size:12px;
+						font-weight:bold;
+						background:#CCCCCC;
+					}
+		#initialError
+		{
+			text-align:center;
+			color:#FF0000;
+			font-size:12px;
+		}
+		#initialFooter
+		{
+			float:left;
+			width:500px;
+			background:url("../imgs/i_footer.gif") left bottom no-repeat;
+		}
+			#initialFooter h2
+			{
+				margin:0px 20px 0px 40px;
+				padding:0;
+				color:#333333;
+				font-size:12px;
+			}
+			#initialFooter p
+			{
+				margin:0px 20px 10px 40px;
+				padding:0;
+				color:#333333;
+				font-size:10px;
+			}

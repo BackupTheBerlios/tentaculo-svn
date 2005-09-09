@@ -1,0 +1,18 @@
+The installation steps are:
+
+* Uncompress the .tar.gz
+
+* Move the navcon directory to the DocumentRoot in your apache web server
+
+* Copy the contents of the misc/apache.conf in the apache configuration file. 
+  The file is based on Debian defaults. Change /var/www to your DocumentRoot.
+  You can add an Include /path/to/navcon/misc/apache.conf line in the apache
+  configuration file too
+
+* Create the directory /var/log/nc and the files messages and errors into it 
+  with permissions 660 owned by root:'apache-group'. The debian default values
+  are root:www-data
+
+* Import the default database from misc/tentaculo.sql into a mysql 4.0 server and 
+  create an account with all data privileges (Select, Insert, Update and Delete) 
+  in this database. Change the access data (username and password) in lib/DBIBase.pm

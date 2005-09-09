@@ -1,0 +1,14 @@
+<h1>Preferencias</h1>
+<h2>Cambiar Contraseña</h2>
+<form class="sectForm" action="index.pl?sect=settings" method="post">
+	<fieldset id="passForm">
+		<p><label for="oldPass">Contraseña Actual</label><input type="password" name="oldPass" id="oldPass"/></p>
+		<p><label for="newPass">Nueva Contraseña</label><input type="password" name="newPass" id="newPass"/></p>
+		<p><label for="newPass2">Ingresar de nuevo</label><input type="password" name="newPass2" id="newPass2"/></p>
+							<p><input type="hidden" name="sub" value="password"/></p>
+							<p><input type="hidden" name="act" value="change"/></p>
+	</fieldset>
+	<fieldset id="passSubmit">
+		<p><input type="submit" name="passSubmitB" value="Cambiar" /></p>
+	</fieldset>
+</form>

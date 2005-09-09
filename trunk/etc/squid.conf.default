@@ -1,0 +1,117 @@
+# NETWORK OPTIONS
+# -----------------------------------------------------------------------------
+
+#  TAG: http_port
+#Default:
+# http_port 3128
+
+#  TAG: icp_port
+#Default:
+# icp_port 3130
+
+
+# OPTIONS WHICH AFFECT THE NEIGHBOR SELECTION ALGORITHM
+# -----------------------------------------------------------------------------
+
+#  TAG: cache_peer
+#Default:
+# none
+
+#  TAG: hierarchy_stoplist
+#We recommend you to use at least the following line.
+hierarchy_stoplist cgi-bin ?
+
+#  TAG: no_cache
+#We recommend you to use the following two lines.
+acl QUERY urlpath_regex cgi-bin \?
+no_cache deny QUERY
+
+
+# OPTIONS WHICH AFFECT THE CACHE SIZE
+# -----------------------------------------------------------------------------
+
+#  TAG: cache_mem	(bytes)
+#Default:
+# cache_mem 8 MB
+
+
+# LOGFILE PATHNAMES AND CACHE DIRECTORIES
+# -----------------------------------------------------------------------------
+
+#  TAG: cache_dir
+#Default:
+# cache_dir ufs /var/spool/squid 100 16 256
+
+# ACCESS CONTROLS
+# -----------------------------------------------------------------------------
+
+#  TAG: acl
+#Recommended minimum configuration:
+acl all src 0.0.0.0/0.0.0.0
+acl manager proto cache_object
+acl localhost src 127.0.0.1/255.255.255.255
+acl to_localhost dst 127.0.0.0/8
+acl SSL_ports port 443 563	# https, snews
+acl SSL_ports port 873		# rsync
+acl Safe_ports port 80		# http
+acl Safe_ports port 21		# ftp
+acl Safe_ports port 443 563	# https, snews
+acl Safe_ports port 70		# gopher
+acl Safe_ports port 210		# wais
+acl Safe_ports port 1025-65535	# unregistered ports
+acl Safe_ports port 280		# http-mgmt
+acl Safe_ports port 488		# gss-http
+acl Safe_ports port 591		# filemaker
+acl Safe_ports port 777		# multiling http
+acl Safe_ports port 631		# cups
+acl Safe_ports port 873		# rsync
+acl Safe_ports port 901		# SWAT
+acl purge method PURGE
+acl CONNECT method CONNECT
+
+#  TAG: http_access
+#Recommended minimum configuration:
+#
+# Only allow cachemgr access from localhost
+http_access allow manager localhost
+http_access deny manager
+# Only allow purge requests from localhost
+http_access allow purge localhost
+http_access deny purge
+# Deny requests to unknown ports
+http_access deny !Safe_ports
+# Deny CONNECT to other than SSL ports
+http_access deny CONNECT !SSL_ports
+# INSERT YOUR OWN RULE(S) HERE TO ALLOW ACCESS FROM YOUR CLIENTS
+http_access allow localhost
+# And finally deny all other access to this proxy
+http_access deny all
+
+#  TAG: icp_access
+icp_access allow all
+
+# ADMINISTRATIVE PARAMETERS
+# -----------------------------------------------------------------------------
+
+#  TAG: visible_hostname
+#Default:
+# none
+
+# DELAY POOL PARAMETERS (all require DELAY_POOLS compilation option)
+# -----------------------------------------------------------------------------
+
+#  TAG: delay_pools
+#Default:
+# delay_pools 0
+
+#  TAG: delay_class
+#Default:
+# none
+
+#  TAG: delay_access
+#Default:
+# none
+
+#  TAG: delay_parameters
+#Default:
+# none

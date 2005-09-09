@@ -1,0 +1,14 @@
+<h1>Estado General del sistema</h1>
+						<form action="index.pl?sect=general" method="post">
+						<fieldset id="sectForm">
+							<p><label for="gEnable">Activar sistema</label><input type="checkbox" name="gEnable" id="gEnable" class="check" value="1"/></p>
+							<p><label for="gHPort">Puerto HTTP</label><input type="text" maxlength="5" name="gHPort" id="gHPort"/></p>
+							<p><label for="gIPort">Puerto ICP</label><input type="text" maxlength="5" name="gIPort" id="gIPort"/></p>
+							<p><label for="gName">Nombre Visible</label><input type="text" name="gName" id="gName"/></p>
+							<p><label for="gDomain">Adicionar dominio</label><input type="text" name="gDomain" id="gDomain"/></p>
+							<p><input type="hidden" name="act" value="change"/></p>
+						</fieldset>
+						<fieldset>
+							<p><input type="submit" value="Cambiar Configuración"/></p>
+						</fieldset>
+					</form>

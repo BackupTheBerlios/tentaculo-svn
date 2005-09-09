@@ -1,0 +1,249 @@
+************************* Use Cases Model *************************
+
+*--------------------- Actors Identification ---------------------*
+
+- User: this actor is present only to log in the system.
+- Administrator: is the only that use the system functionality.
+
+*----------------------- Use Cases Diagram -----------------------*
+
+The diagram is in the UseCase.png file.
+
+*--------------------- Use Cases Description ---------------------*
+
+###################################################################
+# Name	      # Login                                             # 
+# 	      #                                                   # 
+# Actors      # User                                              # 
+# 	      #                                                   # 
+# Type	      # Primary                                           # 
+# 	      #                                                   # 
+# Abstract    # The user enter his username and password to log   # 
+# 	      # into the system and use its functionality. It is  # 
+# 	      # the only available use case for this user. The    # 
+# 	      # rest of the functionality is only available to    #
+# 	      # the system Administrator.                         # 
+# 	      #                                                   # 
+# Description # 1. The user access the init interface.            # 
+# 	      # 2. The system asks for the username and password. # 
+# 	      # 3. The user enters the information.               # 
+# 	      # 4. The system validates the info. and shows the   # 
+# 	      #    administration page.                           # 
+# 	      #                                                   # 
+# Notes	      # The default username is 'admin' and the default   #
+# 	      # password is empty.                                # 
+# 	      #                                                   # 
+###################################################################
+
+###################################################################
+# Name	      # Configure General Setting                         # 
+# 	      #                                                   # 
+# Actors      # Administrator                                     # 
+# 	      #                                                   # 
+# Type	      # Primary                                           # 
+# 	      #                                                   # 
+# Abstract    # The Admin. can set the basic general settings of  # 
+# 	      # the system.                                       # 
+# 	      #                                                   # 
+# Description # 1. The user access the General Configuration      # 
+# 	      #    interface.                                     # 
+# 	      # 2. The system shows the basic setting and allow   # 
+# 	      #    the user to change them.                       # 
+# 	      # 3. The user changes the information.              # 
+# 	      # 4. The system validates teh info. and configure   # 
+# 	      #    the basic settings.                            # 
+# 	      #                                                   # 
+# Notes	      #                                                   # 
+# 	      #                                                   # 
+###################################################################
+
+###################################################################
+# Name	      # Configure Peer                                    # 
+# 	      #                                                   # 
+# Actors      # Administrator                                     # 
+# 	      #                                                   # 
+# Type	      # Primary                                           # 
+# 	      #                                                   # 
+# Abstract    # The Administrator enters a host address and port  # 
+# 	      # to configure it as a cache peer.                  # 
+# 	      #                                                   # 
+# Description # 1. The user access the Peer Configuration inter-  # 
+# 	      #    face.                                          # 
+# 	      # 2. The system asks for the address and the ports  # 
+# 	      # 3. The user enters the information.               # 
+# 	      # 4. The system validates teh info. and configure   # 
+# 	      #    the host as a cache peer.                      # 
+# 	      #                                                   # 
+# Notes	      #                                                   # 
+# 	      #                                                   # 
+###################################################################
+
+###################################################################
+# Name	      # Change Password                                   # 
+# 	      #                                                   # 
+# Actors      # Administrator                                     # 
+# 	      #                                                   # 
+# Type	      # Primary                                           # 
+# 	      #                                                   # 
+# Abstract    # The Administrator can change his/her password.    # 
+# 	      #                                                   # 
+# Description # 1. The user access the Change Password interface. # 
+# 	      # 2. The system asks for the old and the new        # 
+# 	      #    passwords.                                     # 
+# 	      # 3. The system validates the info. and change the  # 
+# 	      #    Administrator password.                        # 
+# 	      #                                                   # 
+# Notes	      # 4. The new password must be typed twice.          # 
+# 	      #                                                   # 
+###################################################################
+
+###################################################################
+# Name	      #                                                   # 
+# 	      #                                                   # 
+# Actors      #                                                   # 
+# 	      #                                                   # 
+# Type	      #                                                   # 
+# 	      #                                                   # 
+# Abstract    #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# Description #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# Notes	      #                                                   # 
+# 	      #                                                   # 
+###################################################################
+
+###################################################################
+# Name	      #                                                   # 
+# 	      #                                                   # 
+# Actors      #                                                   # 
+# 	      #                                                   # 
+# Type	      #                                                   # 
+# 	      #                                                   # 
+# Abstract    #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# Description #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# Notes	      #                                                   # 
+# 	      #                                                   # 
+###################################################################
+
+###################################################################
+# Name	      #                                                   # 
+# 	      #                                                   # 
+# Actors      #                                                   # 
+# 	      #                                                   # 
+# Type	      #                                                   # 
+# 	      #                                                   # 
+# Abstract    #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# Description #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# Notes	      #                                                   # 
+# 	      #                                                   # 
+###################################################################
+
+###################################################################
+# Name	      #                                                   # 
+# 	      #                                                   # 
+# Actors      #                                                   # 
+# 	      #                                                   # 
+# Type	      #                                                   # 
+# 	      #                                                   # 
+# Abstract    #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# Description #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# Notes	      #                                                   # 
+# 	      #                                                   # 
+###################################################################
+
+###################################################################
+# Name	      #                                                   # 
+# 	      #                                                   # 
+# Actors      #                                                   # 
+# 	      #                                                   # 
+# Type	      #                                                   # 
+# 	      #                                                   # 
+# Abstract    #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# Description #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# Notes	      #                                                   # 
+# 	      #                                                   # 
+###################################################################
+
+###################################################################
+# Name	      #                                                   # 
+# 	      #                                                   # 
+# Actors      #                                                   # 
+# 	      #                                                   # 
+# Type	      #                                                   # 
+# 	      #                                                   # 
+# Abstract    #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# Description #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# 	      #                                                   # 
+# Notes	      #                                                   # 
+# 	      #                                                   # 
+###################################################################
+
