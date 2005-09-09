@@ -114,6 +114,8 @@ sub load{
 			$c =~ s/label for="gName"/label class="invalid" for="gName"/ if $_ eq 'gName';
 			$c =~ s/label for="gDomain"/label class="invalid" for="gDomain"/ if $_ eq 'gDomain';
 		}
+			my $m = '<div id="sectForm"><p class="invalid">'._("There were errors procesing the form. Please check the marked values.")."</p></div>";
+			$c =~ s/<!-- MESSAGE -->/$m/;
 	}
 	return $c;
 }

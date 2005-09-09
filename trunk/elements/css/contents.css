@@ -179,6 +179,11 @@ body
 						{
 							color:red;
 						}
+						#content #sectForm p.invalid
+						{
+							color:red;
+						}
+
 						#content #sectForm a
 						{
 							color:#666666;
