@@ -151,7 +151,6 @@ body
 							color:#000000;
 							background:#EEEEEE;
 							width:150px;
-							right:10px
 						}
 						#content #sectForm .check
 						{
@@ -159,21 +158,26 @@ body
 							background:none;
 							width:auto;
 							padding:0;
-							right:10px
 						}
 						#content #sectForm label
 						{	
 							font-size:12px;
-							color:#333333;
 							letter-spacing:1px;
 							color:#000000;
 							padding:1px 4px 1px 1px;
-							width:350px;
-							right:10px
 						}
 						#content #sectForm label.invalid
 						{
 							color:red;
+						}
+						#content #sectForm #bSubmit p input
+						{
+							text-align:center;
+							margin:0;
+							padding:0;
+							font-size:12px;
+							font-weight:bold;
+							width:250px;
 						}
 					#content #passSubmit p
 					{
