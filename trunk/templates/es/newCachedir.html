@@ -1,13 +1,22 @@
 <h1>Creación de un nuevo Directorio de Cache</h1>
-					<form class="sectForm" action="index.pl?sect=cache" method="post">
-						<fieldset id="cachedir">
+					<form action="index.pl?sect=cache" method="post">
+					<table id="sectForm">
+						<fieldset>
 							<p><input type="hidden" name="cID" id="cID"/></p>
-							<p><label for="cDir">Directorio</label><input type="text" name="cDir" id="cDir"/></p>
-							<p><label for="cSize">Tamaño</label><input type="text" name="cSize" id="cSize"/></p>
+							<tr>
+							<td><p><label for="cDir">Directorio</label></p></td>
+							<td><p><input type="text" name="cDir" id="cDir"/></p></td>
+							</tr>
+							<td><p><label for="cSize">Tamaño</label></p></td>
+							<td><p><input type="text" name="cSize" id="cSize"/></p></td>
+							</tr>
 							<p><input type="hidden" name="sub" value="dir"/></p>
 							<p><input type="hidden" name="act" value="add"/></p>
 						</fieldset>
 						<fieldset id="cSubmit">
-							<p><input type="submit" name="cSubmitB" id="cSubmitB" value="Agregar directorio" /></p>
+							<tr>
+							<td colspan="2" id="bSumbit"><p><input type="submit" name="cSubmitB" id="cSubmitB" value="Agregar directorio" /></p></td>
+							</tr>
 						</fieldset>
+					</table>
 					</form>

@@ -143,6 +143,15 @@ body
 							padding:0 0 10px 0;
 							margin:0 0 0 20px;
 						}
+						#content #sectForm p.theader
+						{
+							font-size:14px;
+							color:#333333;
+							font-weight:bold;
+							padding:0 0 10px 0;
+							margin:0 0 0 20px;
+						}
+
 						#content #sectForm input
 						{	
 							font-size:12px;
@@ -170,6 +179,18 @@ body
 						{
 							color:red;
 						}
+						#content #sectForm a
+						{
+							color:#666666;
+							text-decoration:none;
+							background:#EEEEEE;
+						}
+						#content #sectForm a:hover
+						{
+							color:#333333;
+							background:#CCCCCC;
+						}
+
 						#content #sectForm #bSubmit p input
 						{
 							text-align:center;
