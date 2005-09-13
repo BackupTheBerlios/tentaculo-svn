@@ -62,6 +62,24 @@ sub validateDir{
 	return 0;
 }
 
+sub validateMem{
+	shift;
+	my $ph = shift;
+	my @tags;		# Invalid tags
+
+	# cMem must be an integer (could be in Mb).
+	my $cmem = $ph->{cMem};
+	push(@tags,'cMem') unless $cmem =~ /^\d+(Mb)?$/;
+
+	return \@tags if @tags;
+	return 0;
+}
+
+sub changeMem{
+	my $self = shift;
+	General->changeCacheMem(shift);
+}
+
 sub getPeer{
 	my $self = shift;
 	return Cache_Peer->getCachepeer(shift); 
@@ -89,29 +107,37 @@ sub delPeer{
 
 sub load{
 	shift;
-	my $c = shift;
+	my ($c,$tags) = @_;
 	my $mem = General->getCacheMem;
 	my $cda = Cache_Dir->getAll;
 	$c =~ s/name="cMem"/name="cMem" value="$mem"/ if $mem;
 	if ($cda){
+		my $dirs;
 		my ($table, $row) = (Template->read('cache_table'), Template->read('cache_row'));
-		foreach my $d (@{$cda}){  $dirs .= &loadCacheRow($dt, $d);  }
-		#$dirs .= Template->read('cache_table_end');
-		$c =~ s/<!-- CACHE_DIRS -->/$dirs/;
+		foreach my $dir (@{$cda}){ $dirs .= &loadCacheRow($row, $dir); }
+		$table =~ s/<!-- CACHE_DIRS -->/$dirs/;
+		$c =~ s/<!-- DIRS_TABLE -->/$table/;
 	} else {
 		my $no_dir = "<p>"._("There are not cache directories configured.")."</p>";
 		$no_dir .= '<div id="sectForm"><p><a href="index.pl?sect=cache&sub=dir&act=new">'._("Agregar nuevo directorio de Cache").'</a></p></div>';
 		$c =~ s/<!-- CACHE_DIRS -->/$no_dir/;
 	}
+	if($tags){
+		foreach (@{$tags}){
+			$c =~ s/for="cMem"/class="invalid" for="cMem"/ if $_ eq 'cMem';	
+		}
+			my $m = '<div id="sectForm"><p class="invalid">'._("The value entered for the memory is invalid. It have to be an integer (in Kb by default or with an explicit Mb).")."</p></div>";
+			$c =~ s/<!-- MESSAGE -->/$m/;
+	}
 	return $c;
 }
 
 sub loadCacheRow{
-	my ($dt,$d) = @_;
-	$dt =~ s/ID/$d->{id}/g;
-	$dt =~ s/<!-- DIR -->/$d->{directory}/;
-	$dt =~ s/<!-- SIZE -->/$d->{size}/;
-	return $dt;
+	my ($row,$dir) = @_;
+	$row =~ s/ID/$dir->{id}/g;
+	$row =~ s/<!-- DIR -->/$dir->{directory}/;
+	$row =~ s/<!-- SIZE -->/$dir->{size}/;
+	return $row;
 }
 
 sub loadCachedir{
