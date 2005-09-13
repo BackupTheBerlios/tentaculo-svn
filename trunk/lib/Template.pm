@@ -41,49 +41,6 @@ sub result{
 	$res =~ s/SECTION/$sect/g;
 	return $res;
 }
-
-sub loadGeneral{
-	shift;
-	my ($c,$s) = @_;
-	$c =~ s/name="gEnable"/name="gEnable" checked="checked"/ if $s->{enable};
-	$c =~ s/name="gHPort"/name="gHPort" value="$s->{http_port}"/ if $s->{http_port};
-	$c =~ s/name="gName"/name="gName" value="$s->{visible_hostname}"/ if $s->{visible_hostname};
-	$c =~ s/name="gDomain"/name="gDomain" value="$s->{append_domain}"/ if $s->{append_domain};
-	$c =~ s/name="gIPort"/name="gIPort" value="$s->{icp_port}"/ if $s->{icp_port};
-	return $c;
-}
-
-sub loadCache{
-	shift;
-	my ($c,$mem,$cda) = @_;		# $cda = cache dirs array
-	$c =~ s/name="cMem"/name="cMem" value="$mem"/ if $mem;
-	if ($cda){
-		my ($dirs, $dt) = (Template->read('cache_table'), Template->read('cache_row'));
-		foreach my $d (@{$cda}){  $dirs .= Template->loadCacheRow($dt, $d);  }
-		$dirs .= Template->read('cache_table_end');
-		$c =~ s/<!-- CACHE_DIRS -->/$dirs/;
-	}
-	return $c;
-}
-
-sub loadCacheRow{
-	shift;
-	my ($dt,$d) = @_;
-	$dt =~ s/ID/$d->{id}/g;
-	$dt =~ s/<!-- DIR -->/$d->{directory}/;
-	$dt =~ s/<!-- SIZE -->/$d->{size}/;
-	return $dt;
-}
-
-sub loadCachedir{
-	shift;
-	my ($c,$d) = @_;
-	$c =~ s/name="cID"/name="cID" value="$d->{id}"/ if $d->{id};
-	$c =~ s/name="cDir"/name="cDir" value="$d->{directory}"/ if $d->{directory};
-	$c =~ s/name="cSize"/name="cSize" value="$d->{size}"/ if $d->{size};
-	return $c;
-}
-
 sub loginError{
 	shift;
 	my $p = shift;

@@ -127,7 +127,7 @@ sub result{
 	my $res = Template->read('result');
 	if ($r){ 
 		$t = _('Successful change'); 
-		$m = _('The General Configuration has been changed successfully.');
+		$m = _('The general configuration has been changed successfully.');
 	} else { 
 		$t = _('Unsuccessful change'); 
 		$m = _('There was a problem trying to apply the changes. Please try again.')

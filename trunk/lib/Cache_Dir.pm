@@ -11,9 +11,10 @@ sub getAll{
 	shift;
 	my @dirs;
 	foreach my $d (Cache_Dir->retrieve_all){
-		push @dirs, {id => $d->id, directory => $d->directory, size => $d->size};
+		push @dirs, { id => $d->id, directory => $d->directory, size => $d->size, };
 	}
-	return \@dirs;
+	return \@dirs if @dirs;
+	return 0;
 }
 
 sub getCachedir{

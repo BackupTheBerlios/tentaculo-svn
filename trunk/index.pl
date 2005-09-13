@@ -23,9 +23,9 @@ $ac->startSession();		# Start a new session or recover an started one.
 
 # Per-section modules and their objects.
 use General;
-use CacheControl;
+use Cache;
 my $gen = General->new();
-my $cc = CacheControl->new();
+my $cach = Cache->new();
 
 # HTML Page variables. t = template. c = content (or template fill).
 my ($t,$c);
@@ -37,7 +37,7 @@ if ( $ac->isLoggedIn() ){
 	my $sub = $phr->{'sub'} || $cgi->url_param('sub') || '';
 	my $act = $phr->{'act'} || $cgi->url_param('act') || '';
 
-	#Logger->message("index.pl vars sect: $sect sub: $sub act: $act");
+	Logger->message("index.pl vars sect: $sect sub: $sub act: $act");
 	
 	# Valid content sections
 	my @csects = qw/general cache settings status/;
@@ -62,8 +62,6 @@ if ( $ac->isLoggedIn() ){
 		$c = $gen->load($c) unless $act;
 		if ( $act eq 'change' ){
 			my $err = $gen->validate($phr);
-			#$c = Template->result($gen->change($phr), $sect) unless $err;
-			#Logger->error("Hay errores en general") if $err;
 			$c = $gen->result($gen->change($phr)) unless $err;
 			$c = $gen->load($c, $err) if $err;
 		}
@@ -74,23 +72,27 @@ if ( $ac->isLoggedIn() ){
 			if ( $act eq 'view' ) {
 				$c = Template->read('cachedir');
 				my $id = $cgi->url_param('id');
-				$c = Template->loadCachedir($c, $cc->getDir($id)) if $id;
+				$c = Template->loadCachedir($c, $cach->getDir($id)) if $id;
 			} elsif ( $act eq 'change' ) {
-				$c = Template->result($cc->changeDir($phr), $sect);
+				$c = Template->result($cach->changeDir($phr), $sect);
 			} elsif ( $act eq 'new' ) {
-				$c = Template->read('newCachedir');
+				$c = $cach->newDir() 
 			} elsif ( $act eq 'add' ) {
-				$c = Template->result($cc->addDir($phr), $sect);
+				my $err = $cach->validateDir($phr);
+				$c = $cach->result($cach->addDir($phr)) unless $err;
+				$c = $cach->newDir($err) if $err;
 			} elsif ( $act eq 'del' ) {
 				my $id = $cgi->url_param('id');
-				$c = Template->result($cc->delDir($id), $sect) if $id;
+				$c = Template->result($cach->delDir($id), $sect) if $id;
 			}
 		} elsif ( !$sub ) {
+			$c = $cach->load($c) unless $act;
 			if ( $act eq 'change' ){
-				$c = Template->result($cc->changeMem($phr), $sect);
+				my $err = $cach->validateMem($phr);
+				$c = $cach->result($cach->changeMem($phr)) unless $err;
+				$c = $cach->load($c, $err) if $err;
 			}
-			$c = Template->loadCache($c, $cc->getMem(), $cc->getDirs());
-		} else {  Logger->error('Wrong subsection in Cache.')  }
+		}
 	} elsif ( $sect eq 'settings' ) {
 		#-- Settings section --#
 		if($sub eq 'password'){
