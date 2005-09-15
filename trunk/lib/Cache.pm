@@ -15,6 +15,33 @@ sub new{
 	return $self;
 }
 
+sub load{
+	shift;
+	my ($c,$tags) = @_;
+	my $mem = General->getCacheMem;
+	my $cda = Cache_Dir->getAll;
+	$c =~ s/name="cMem"/name="cMem" value="$mem"/ if $mem;
+	if ($cda){
+		my $dirs;
+		my ($table, $row) = (Template->read('cache_table'), Template->read('cache_row'));
+		foreach my $dir (@{$cda}){ $dirs .= &loadCacheRow($row, $dir); }
+		$table =~ s/<!-- CACHE_DIRS -->/$dirs/;
+		$c =~ s/<!-- DIRS_TABLE -->/$table/;
+	} else {
+		my $no_dir = "<p>"._("There are not cache directories configured.")."</p>";
+		$no_dir .= '<div id="sectForm"><p><a href="index.pl?sect=cache&sub=dir&act=new">'._("Agregar nuevo directorio de Cache").'</a></p></div>';
+		$c =~ s/<!-- DIRS_TABLE -->/$no_dir/;
+	}
+	if($tags){
+		foreach (@{$tags}){
+			$c =~ s/for="cMem"/class="invalid" for="cMem"/ if $_ eq 'cMem';	
+		}
+			my $m = '<div id="sectForm"><p class="invalid">'._("The value entered for the memory is invalid. It have to be an integer (in Kb by default or with an explicit Mb).")."</p></div>";
+			$c =~ s/<!-- MESSAGE -->/$m/;
+	}
+	return $c;
+}
+
 sub changeDir{
 	my $self = shift;
 	Cache_Dir->changeCachedir(shift);
@@ -27,7 +54,7 @@ sub addDir{
 
 sub delDir{
 	my $self = shift;
-	Cache_Dir->delCachedir(shift);
+	return Cache_Dir->delCachedir(shift);
 }
 
 sub newDir{
@@ -105,33 +132,6 @@ sub delPeer{
 	Cache_Peer->delCachepeer(shift);
 }
 
-sub load{
-	shift;
-	my ($c,$tags) = @_;
-	my $mem = General->getCacheMem;
-	my $cda = Cache_Dir->getAll;
-	$c =~ s/name="cMem"/name="cMem" value="$mem"/ if $mem;
-	if ($cda){
-		my $dirs;
-		my ($table, $row) = (Template->read('cache_table'), Template->read('cache_row'));
-		foreach my $dir (@{$cda}){ $dirs .= &loadCacheRow($row, $dir); }
-		$table =~ s/<!-- CACHE_DIRS -->/$dirs/;
-		$c =~ s/<!-- DIRS_TABLE -->/$table/;
-	} else {
-		my $no_dir = "<p>"._("There are not cache directories configured.")."</p>";
-		$no_dir .= '<div id="sectForm"><p><a href="index.pl?sect=cache&sub=dir&act=new">'._("Agregar nuevo directorio de Cache").'</a></p></div>';
-		$c =~ s/<!-- CACHE_DIRS -->/$no_dir/;
-	}
-	if($tags){
-		foreach (@{$tags}){
-			$c =~ s/for="cMem"/class="invalid" for="cMem"/ if $_ eq 'cMem';	
-		}
-			my $m = '<div id="sectForm"><p class="invalid">'._("The value entered for the memory is invalid. It have to be an integer (in Kb by default or with an explicit Mb).")."</p></div>";
-			$c =~ s/<!-- MESSAGE -->/$m/;
-	}
-	return $c;
-}
-
 sub loadCacheRow{
 	my ($row,$dir) = @_;
 	$row =~ s/ID/$dir->{id}/g;
@@ -142,10 +142,19 @@ sub loadCacheRow{
 
 sub loadCachedir{
 	shift;
-	my ($c,$d) = @_;
+	my ($c, $id, $tags) = @_;
+	my $d = Cache_Dir->getCachedir($id) if $id;
 	$c =~ s/name="cID"/name="cID" value="$d->{id}"/ if $d->{id};
 	$c =~ s/name="cDir"/name="cDir" value="$d->{directory}"/ if $d->{directory};
 	$c =~ s/name="cSize"/name="cSize" value="$d->{size}"/ if $d->{size};
+	if ($tags){
+		my $m = _("There was errrors validating the data for changed cache directory.");
+		foreach (@{$tags}){
+			$m .= _(" The entered path seems to be wrong.") if $_ eq 'cDir';	
+			$m .= _(" The entered size seems to be wrong.") if $_ eq 'cSize';	
+		}
+		$c =~ s/<!-- MESSAGE -->/$m/;
+	}
 	return $c;
 }
 

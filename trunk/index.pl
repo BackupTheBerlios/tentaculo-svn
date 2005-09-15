@@ -67,30 +67,33 @@ if ( $ac->isLoggedIn() ){
 		}
 	} elsif ( $sect eq 'cache' ) {
 		#-- Cache section --#
-		if($sub eq 'dir'){
+		if(!$sub){
+			$c = $cach->load($c) unless $act;
+			if ( $act eq 'change' ){
+				my $err = $cach->validateMem($phr);
+				$c = $cach->result($cach->changeMem($phr)) unless $err;
+				$c = $cach->load($c, $err) if $err;
+			}
+		} elsif($sub eq 'dir'){
 			# cache_dir subsection 
 			if ( $act eq 'view' ) {
 				$c = Template->read('cachedir');
 				my $id = $cgi->url_param('id');
-				$c = Template->loadCachedir($c, $cach->getDir($id)) if $id;
+				$c = $cach->loadCachedir($c, $id) if $id;
 			} elsif ( $act eq 'change' ) {
-				$c = Template->result($cach->changeDir($phr), $sect);
+				my ($err, $id) = ($cach->validateDir($phr), $phr->{cID});
+				$c = $cach->result($cach->changeDir($phr)) unless $err;
+				$c = Template->read('cachedir') if $err;
+				$c = $cach->loadCachedir($c, $id, $err) if $id || $err;
 			} elsif ( $act eq 'new' ) {
-				$c = $cach->newDir() 
+				$c = $cach->newDir();
 			} elsif ( $act eq 'add' ) {
 				my $err = $cach->validateDir($phr);
 				$c = $cach->result($cach->addDir($phr)) unless $err;
 				$c = $cach->newDir($err) if $err;
 			} elsif ( $act eq 'del' ) {
 				my $id = $cgi->url_param('id');
-				$c = Template->result($cach->delDir($id), $sect) if $id;
-			}
-		} elsif ( !$sub ) {
-			$c = $cach->load($c) unless $act;
-			if ( $act eq 'change' ){
-				my $err = $cach->validateMem($phr);
-				$c = $cach->result($cach->changeMem($phr)) unless $err;
-				$c = $cach->load($c, $err) if $err;
+				$c = $cach->result($cach->delDir($id)) if $id;
 			}
 		}
 	} elsif ( $sect eq 'settings' ) {

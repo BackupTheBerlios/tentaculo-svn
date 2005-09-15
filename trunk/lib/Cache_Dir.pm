@@ -27,9 +27,10 @@ sub changeCachedir{
 	shift;
 	my $ph = shift;
 	my $cd = Cache_Dir->retrieve($ph->{cID});
-	$cd->directory($ph->{cDir});
-	$cd->size($ph->{cSize});
-	return $cd->update;
+	$cd->directory($ph->{cDir}) if $cd;
+	$cd->size($ph->{cSize}) if $cd;
+	return $cd->update if $cd;
+	return 0;
 }
 
 sub addCachedir{
@@ -45,6 +46,7 @@ sub delCachedir{
 	shift;
 	my $d = Cache_Dir->retrieve(shift);
 	return $d->delete() if $d;
+	return 0;
 }
 
 1;
