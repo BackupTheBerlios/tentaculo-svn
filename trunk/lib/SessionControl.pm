@@ -1,7 +1,5 @@
-#!/usr/bin/perl -w
-# Script para verificar el estado de la sesión de los usuarios.
-
-package AccessControl;
+package SessionControl;
+# This module manages the session stuff.
 
 use strict;
 use CGI::Session;
