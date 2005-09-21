@@ -15,23 +15,25 @@ my $cgi = new CGI;
 my $phr = $cgi->Vars;		# All (p)arams (h)ash (r)eference
 
 # General system general modules.
-use AccessControl;
+use SessionControl;
 use Logger;
 use Template;
-my $ac = AccessControl->new($cgi);
-$ac->startSession();		# Start a new session or recover an started one.
+my $sc = SessionControl->new($cgi);
+$sc->startSession();		# Start a new session or recover an started one.
 
 # Per-section modules and their objects.
 use General;
 use Cache;
+use Status;
 my $gen = General->new();
 my $cach = Cache->new();
+my $stat = Status->new();
 
 # HTML Page variables. t = template. c = content (or template fill).
 my ($t,$c);
 
 # Start to check user and process status and petitions.
-if ( $ac->isLoggedIn() ){
+if ( $sc->isLoggedIn() ){
 	# The user is logged in. Get the principal params.
 	my $sect = $phr->{'sect'} || $cgi->url_param('sect') || 'status';
 	my $sub = $phr->{'sub'} || $cgi->url_param('sub') || '';
@@ -51,12 +53,10 @@ if ( $ac->isLoggedIn() ){
 	# Choose the section and call the proper methods in the control objects.
 	if ( $sect eq 'status' ) {
 		#-- Status section --#
-		if($sub eq 'squid'){
-			# squid subsection 
-			if ( $act eq 'start' ) {
-				$c = Secure->startSquid();
-			}
-		}	
+		my $s = $sc->param("status");
+		print $cgi->redirect("sec.pl?act=status") unless $s;
+		$c = $stat->load($c, $s);
+		$sc->clear("status");		# clear the status param in the session.
 	} elsif ( $sect eq 'general' ) {
 		#-- General section --#
 		$c = $gen->load($c) unless $act;
@@ -101,21 +101,20 @@ if ( $ac->isLoggedIn() ){
 		if($sub eq 'password'){
 			# Password subsection 
 			if ( $act eq 'change' ) {
-				$c = Template->result($ac->changePass($phr), $sect, $sub);
+				$c = Template->result($sc->changePass($phr), $sect, $sub);
 			}
 		}	
 	} elsif ( $sect eq 'logout' ) {
-		$ac->logOut();
-		$t = Template->read('login');	
+		$sc->logOut();
+		print $cgi->redirect("index.pl");
 	}
 } else {
 	# The user is not logged in
 	if ($phr->{'logUser'}) {
 		# The user is trying to log in.
-		if ( $ac->check($phr) ) {
+		if ( $sc->check($phr) ) {
 			# The user logged in.
-			$t = Template->read('admin');
-			$c = Template->read('status');
+			print $cgi->redirect("index.pl");
 		} else {
 			# The user failed trying to log in.
 			$t = Template->read('login');
@@ -129,7 +128,7 @@ if ( $ac->isLoggedIn() ){
 
 $t =~ s/<!-- CONTENT -->/$c/ if $t;
 
-print $cgi->header(-cookie=>$ac->cookie); 
+print $cgi->header(-cookie=>$sc->cookie); 
 print $t if $t;
 
-Logger->error("The is no page to print!") unless $t;
+Logger->error("There is no page to print!\n") unless $t;

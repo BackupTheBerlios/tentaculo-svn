@@ -28,7 +28,13 @@ sub param{
 	my $self = shift;
 	my $variable = shift;
 	if (@_){ return $self->{session}->param($variable,shift);}
-	else {return $self->{session}->param($variable);}
+	else {my $ret = $self->{session}->param($variable) || '' ; return $ret; }
+}
+
+sub clear{
+	my $self = shift;
+	my $variable = shift;
+	return $self->{session}->clear($variable);
 }
 
 sub check{
