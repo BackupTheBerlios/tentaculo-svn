@@ -4,6 +4,3 @@ The system has the following requirements:
 + Perl 5.8
 + CGI:Session, DBI and Class::DBI perl modules
 + MySQL 4.0 
-
-
-The database has been modeled with DBDesigner4 (http://www.fabforce.net/dbdesigner4/) and the model file is doc/db.xml

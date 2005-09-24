@@ -2,17 +2,24 @@ The installation steps are:
 
 * Uncompress the .tar.gz
 
-* Move the navcon directory to the DocumentRoot in your apache web server
+* Move the 'tentaculo' directory to the DocumentRoot in your apache web server.
+  The files in the 'log' directory must be writable by the user running the 
+  webserver. Change the group that own the files by the webserver group and give 
+  write privileges to it (You need root privileges to execute these operations.):
+  
+  # chgrp www-data/*; chmod g+w log/*
+
+  www-data is the default webserver groupname in Debian, the groupname depends on
+  each distribution.
 
 * Copy the contents of the misc/apache.conf in the apache configuration file. 
   The file is based on Debian defaults. Change /var/www to your DocumentRoot.
-  You can add an Include /path/to/navcon/misc/apache.conf line in the apache
-  configuration file too
-
-* Create the directory /var/log/nc and the files messages and errors into it 
-  with permissions 660 owned by root:'apache-group'. The debian default values
-  are root:www-data
+  You can add an 'Include /path/to/tentaculo/misc/apache.conf' line in the apache
+  configuration file too.
 
 * Import the default database from misc/tentaculo.sql into a mysql 4.0 server and 
   create an account with all data privileges (Select, Insert, Update and Delete) 
   in this database. Change the access data (username and password) in lib/DBIBase.pm
+
+* Point your browser to http://server/tentaculo . The default username and password
+  are 'admin' and 'hola' respectivly.

@@ -1,4 +1,4 @@
-This file document the tags suppported in the system.
+This file document the squid.conf tags suppported in the system.
 
 * Tags suppported:
 General: http_port, visible_hostname
