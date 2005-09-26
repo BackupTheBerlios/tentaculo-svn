@@ -18,8 +18,6 @@ sub load{
 	my $sys = $s->{sys} ? _("controlling squid") : _("not controlling squid");
 	$c =~ s/<!-- SYS-STATUS -->/$sys/;
 
-	$c =~ s/<!-- CHANGES -->/$s->{changes}/ if $s->{changes};
-
 	my $squ = $s->{squ} ? _("running") : _("stopped");
 	$c =~ s/<!-- SQ-STATUS -->/$squ/;
 

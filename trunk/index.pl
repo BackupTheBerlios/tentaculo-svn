@@ -18,8 +18,10 @@ my $phr = $cgi->Vars;		# All (p)arams (h)ash (r)eference
 use SessionControl;
 use Logger;
 use Template;
+use SquidControl;
 my $sc = SessionControl->new($cgi);
 $sc->startSession();		# Start a new session or recover an started one.
+my $squc = SquidControl->new();
 
 # Per-section modules and their objects.
 use General;
@@ -55,7 +57,7 @@ if ( $sc->isLoggedIn() ){
 		#-- Status section --#
 		my $s = $sc->param("status");
 		print $cgi->redirect("sec.pl?act=status") unless $s;
-		$c = $stat->load($c, $s);
+		$c = $stat->load($c, $s) if $s;
 		$sc->clear("status");		# clear the status param in the session.
 	} elsif ( $sect eq 'general' ) {
 		#-- General section --#
@@ -114,7 +116,7 @@ if ( $sc->isLoggedIn() ){
 		# The user is trying to log in.
 		if ( $sc->check($phr) ) {
 			# The user logged in.
-			print $cgi->redirect("index.pl");
+			print $cgi->redirect('index.pl');
 		} else {
 			# The user failed trying to log in.
 			$t = Template->read('login');
@@ -126,9 +128,9 @@ if ( $sc->isLoggedIn() ){
 	}
 } 
 
-$t =~ s/<!-- CONTENT -->/$c/ if $t;
+# Write the configuration file locally.
+$squc->writeFile();
 
-print $cgi->header(-cookie=>$sc->cookie); 
-print $t if $t;
-
-Logger->error("There is no page to print!\n") unless $t;
+# Replace the content in the template and print it if exists, else log an error.
+$t =~ s/<!-- CONTENT -->/$c/ if ($t && $c);
+print $cgi->header(-cookie=>$sc->cookie),$t if $t; 

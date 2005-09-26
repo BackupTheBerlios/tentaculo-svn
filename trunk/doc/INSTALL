@@ -7,7 +7,7 @@ The installation steps are:
   webserver. Change the group that own the files by the webserver group and give 
   write privileges to it (You need root privileges to execute these operations.):
   
-  # chgrp www-data/*; chmod g+w log/*
+  # chgrp www-data log/*; chmod g+w log/*
 
   www-data is the default webserver groupname in Debian, the groupname depends on
   each distribution.
@@ -15,7 +15,8 @@ The installation steps are:
 * Copy the contents of the misc/apache.conf in the apache configuration file. 
   The file is based on Debian defaults. Change /var/www to your DocumentRoot.
   You can add an 'Include /path/to/tentaculo/misc/apache.conf' line in the apache
-  configuration file too.
+  configuration file too. You can also copy the apache.conf file as tentaculo.conf 
+  in the /etc/apache/conf.d/ directory.
 
 * Import the default database from misc/tentaculo.sql into a mysql 4.0 server and 
   create an account with all data privileges (Select, Insert, Update and Delete) 

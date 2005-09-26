@@ -20,6 +20,8 @@ if ( $sc->isLoggedIn() ){
 	my $uid = POSIX::getuid();
 	my $act = $cgi->url_param('act');
 
+	Logger->message("Called sec.pl");
+
 	if($act && $act eq 'status'){
 		my $s = { sys => 0, cha => 0, squ => 0};
 		&getRoot() or Logger->error("Can't get root privileges");

@@ -96,7 +96,7 @@ sub validateMem{
 
 	# cMem must be an integer (could be in Mb).
 	my $cmem = $ph->{cMem};
-	push(@tags,'cMem') unless $cmem =~ /^\d+(Mb)?$/;
+	push(@tags,'cMem') unless $cmem =~ /^\d+( MB)?$/;
 
 	return \@tags if @tags;
 	return 0;
