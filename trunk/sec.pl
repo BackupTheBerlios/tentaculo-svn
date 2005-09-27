@@ -34,6 +34,11 @@ if ( $sc->isLoggedIn() ){
 
 		POSIX::setuid($uid); 		# Hold privileges.
 		$sc->param('status', $s);
+	} elsif($act && $act eq 'restart') {
+		&getRoot() or Logger->error("Can't get root privileges");
+		my $res = `cp etc/squid.conf /etc/squid; /etc/init.d/squid restart`;
+		Logger->message("Restart result: ".$res);
+		$sc->param('restart', $res);
 	}
 } else {
 	# An error. This script should not be called without being logged in.

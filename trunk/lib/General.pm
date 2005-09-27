@@ -45,8 +45,9 @@ sub change{
 		$g->visible_hostname($ph->{gName});
 		$g->append_domain($ph->{gDomain});
 		$g->icp_port($ph->{gIPort});
-		return $g->update;
-	} else { return 0; }
+		return $g->update if General->isChanged(1);
+	}
+	return 0;
 }
 
 sub validate{
@@ -88,13 +89,20 @@ sub changeCacheMem{
 	my $ph = shift;
 	my $g = General->retrieve(1);
 	$g->cache_mem($ph->{cMem});
-	return $g->update;
+	return $g->update if General->isChanged(1);
+	return 0;
 }
 
 sub isChanged{
 	shift;
+	my $var;
+	$var = shift if @_;		# method called with a param.		
 	my $g = General->retrieve(1);
-	return $g->changed;
+	if (defined($var) && ($var == 1 || $var == 0)){
+		$g->changed($var);
+		$g->update;
+	} 
+	return $g->changed();
 }
 
 sub load{

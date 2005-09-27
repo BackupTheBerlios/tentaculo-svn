@@ -55,10 +55,14 @@ if ( $sc->isLoggedIn() ){
 	# Choose the section and call the proper methods in the control objects.
 	if ( $sect eq 'status' ) {
 		#-- Status section --#
-		my $s = $sc->param("status");
-		print $cgi->redirect("sec.pl?act=status") unless $s;
-		$c = $stat->load($c, $s) if $s;
-		$sc->clear("status");		# clear the status param in the session.
+		if(!$act){
+			my $s = $sc->param("status");
+			print $cgi->redirect("sec.pl?act=status") unless $s;
+			$c = $stat->load($c, $s) if $s;
+			$sc->clear("status");		# clear the status param in the session.
+		} elsif( $act eq 'restart'){
+			print $cgi->redirect("sec.pl?act=restart");
+		}
 	} elsif ( $sect eq 'general' ) {
 		#-- General section --#
 		$c = $gen->load($c) unless $act;
@@ -129,7 +133,8 @@ if ( $sc->isLoggedIn() ){
 } 
 
 # Write the configuration file locally.
-$squc->writeFile();
+Logger->message("changed: ".$gen->isChanged());
+$squc->writeFile() if $gen->isChanged() == 1;
 
 # Replace the content in the template and print it if exists, else log an error.
 $t =~ s/<!-- CONTENT -->/$c/ if ($t && $c);

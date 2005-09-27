@@ -19,6 +19,7 @@ sub writeFile{
 	open(FILE,">etc/squid.conf") or die "Error: ".$!;
 	print FILE $cont;
 	close(FILE);
+	return General->isChanged(0);
 }
 
 sub header {
