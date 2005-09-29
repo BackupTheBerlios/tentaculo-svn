@@ -15,7 +15,7 @@ sub new{
 
 sub writeFile{
 	shift;
-	my $cont = &header().&general().&cache().&acl();
+	my $cont = &header().&general().&cache().&acl().&http_access();
 	open(FILE,">etc/squid.conf") or die "Error: ".$!;
 	print FILE $cont;
 	close(FILE);
@@ -50,6 +50,7 @@ sub cache {
 	# hierarchy_stoplist and no_cache configurations are squid recommended
 	$ret .= &simpleTag('hierarchy_stoplist', 'cgi-bin ?');
 	$ret .=	"#  TAG: no_cache\n";
+	$ret .=	"#  (squid recommended)\n";
 	$ret .= "# -----------------------------------------------------------\n";
 	$ret .= 'acl QUERY urlpath_regex cgi-bin \?'."\n";
 	$ret .= "no_cache deny QUERY\n\n";
@@ -90,6 +91,25 @@ sub acl {
 	$ret .= "acl CONNECT method CONNECT\n";
 }
 
+sub http_access {
+	shift;
+	my $ret;
+	# Only allow cachemgr access from localhost
+	$ret .= "http_access allow manager localhost\n";
+	$ret .= "http_access deny manager\n";
+	# Only allow purge requests from localhost
+	$ret .= "http_access allow purge localhost\n";
+	$ret .= "http_access deny purge\n";
+	$ret .= "# Deny requests to unknown ports\n";
+	$ret .= "http_access deny !Safe_ports\n";
+	# Deny CONNECT to other than SSL ports
+	$ret .= "http_access deny CONNECT !SSL_ports\n";
+	# INSERT YOUR OWN RULE(S) HERE TO ALLOW ACCESS FROM YOUR CLIENTS
+	$ret .= "http_access allow localhost\n";
+	# And finally deny all other access to this proxy
+	$ret .= "http_access deny all\n";
+	return $ret;
+}
 sub simpleTag {
 	my $ret;
 	my ($tag, $value) = @_;

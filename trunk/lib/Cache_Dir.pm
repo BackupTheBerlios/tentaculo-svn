@@ -3,6 +3,7 @@ use base 'DBIBase';
 
 use strict;
 use Logger;
+use General;
 
 Cache_Dir->table('cache_dir');
 Cache_Dir->columns(All => qw/id directory size/);
@@ -29,7 +30,7 @@ sub changeCachedir{
 	my $cd = Cache_Dir->retrieve($ph->{cID});
 	$cd->directory($ph->{cDir}) if $cd;
 	$cd->size($ph->{cSize}) if $cd;
-	return $cd->update if $cd;
+	return $cd->update if ($cd && General->isChanged(1));
 	return 0;
 }
 

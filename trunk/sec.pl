@@ -15,29 +15,32 @@ use Logger;
 my $cgi = new CGI;
 my $sc = SessionControl->new($cgi);
 $sc->startSession();		# Start a new session or recover an started one.
+my $scf = "/etc/squid/squid.conf";
 
 if ( $sc->isLoggedIn() ){
 	my $uid = POSIX::getuid();
 	my $act = $cgi->url_param('act');
-
-	Logger->message("Called sec.pl");
+	my $stat = $sc->param('status');
 
 	if($act && $act eq 'status'){
-		my $s = { sys => 0, cha => 0, squ => 0};
+		my $s = { sys => 0, squ => 0};
 		&getRoot() or Logger->error("Can't get root privileges");
-
 		# Compare the files to check if the system is controlling squid.
-		$s->{sys} = 1 unless `diff etc/squid.conf /etc/squid/squid.conf`;
-
+		$s->{sys} = 1 unless `diff etc/squid.conf $scf`;
 		# Is squid running?
 		$s->{squ} = 1 if `pgrep squid`;
-
-		POSIX::setuid($uid); 		# Hold privileges.
+		&holdRoot($uid) or die "Can't hold root privilegs";
 		$sc->param('status', $s);
 	} elsif($act && $act eq 'restart') {
 		&getRoot() or Logger->error("Can't get root privileges");
-		my $res = `cp etc/squid.conf /etc/squid; /etc/init.d/squid restart`;
-		Logger->message("Restart result: ".$res);
+		# Make a backup the first time.
+		`cp $scf $scf.tent` if (-e $scf && !-e $scf."tent");
+		# An easy way: copy the configuration file and reload/start squid.
+		my $res = `cp -v etc/squid.conf $scf;`;
+		if ($stat && $stat->{squ}){ $res .= `squid -k reconfigure`; } # running, just reload
+		else {  $res .= `/etc/init.d/squid start`; }
+		&holdRoot($uid) or die "Can't hold root privileges";
+		Logger->message("Restarting squid result: $res");
 		$sc->param('restart', $res);
 	}
 } else {
@@ -55,3 +58,10 @@ sub getRoot{
 	return 0;
 }
 
+sub holdRoot{
+	shift;
+	my $uid = shift;
+	POSIX::setuid($uid);
+	return 1 if POSIX::getuid() == $uid;
+	return 0;
+}

@@ -57,9 +57,10 @@ if ( $sc->isLoggedIn() ){
 		#-- Status section --#
 		if(!$act){
 			my $s = $sc->param("status");
+			my $r = $sc->param("restart");
 			print $cgi->redirect("sec.pl?act=status") unless $s;
-			$c = $stat->load($c, $s) if $s;
-			$sc->clear("status");		# clear the status param in the session.
+			$c = $stat->load($c, $s, $r) if $s;
+			$sc->clear(["status"]); # clear session params 
 		} elsif( $act eq 'restart'){
 			print $cgi->redirect("sec.pl?act=restart");
 		}
@@ -133,7 +134,6 @@ if ( $sc->isLoggedIn() ){
 } 
 
 # Write the configuration file locally.
-Logger->message("changed: ".$gen->isChanged());
 $squc->writeFile() if $gen->isChanged() == 1;
 
 # Replace the content in the template and print it if exists, else log an error.
