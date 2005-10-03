@@ -107,7 +107,6 @@ CREATE TABLE delay_pool (
 
 CREATE TABLE general (
   id int(11) NOT NULL default '1',
-  enable tinyint(1) NOT NULL default '0',
   changed tinyint(1) NOT NULL default '0',
   swap tinyint(1) NOT NULL default '0',
   http_port smallint(5) unsigned NOT NULL default '3128',
@@ -122,4 +121,4 @@ CREATE TABLE general (
 -- Data for table `general`
 -- 
 
-INSERT INTO general VALUES (1, 0, 0, 0, 3128, 3130, NULL, NULL, '8M');
+INSERT INTO general VALUES (1, 0, 0, 3128, 3130, NULL, NULL, '8M');

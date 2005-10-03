@@ -7,7 +7,7 @@ use Template;
 use Data::Types qw(:int);
 
 General->table('general');
-General->columns(All => qw/id enable changed swap http_port visible_hostname append_domain icp_port cache_mem/);
+General->columns(All => qw/id changed swap http_port visible_hostname append_domain icp_port cache_mem/);
 
 sub new{
 	my $this = shift;
@@ -21,7 +21,6 @@ sub getGeneral{
 	shift;
 	my $g = General->retrieve(1);
 	return {
-		enable		 => 	$g->enable,
 		http_port 	 => 	$g->http_port,
 		visible_hostname =>	$g->visible_hostname,
 		append_domain	 =>	$g->append_domain,
@@ -40,7 +39,6 @@ sub change{
 	my $ph = shift;
 	my $g = General->retrieve(1);
 	if ($g){
-		$g->enable($ph->{gEnable});
 		$g->http_port($ph->{gHPort});
 		$g->visible_hostname($ph->{gName});
 		$g->append_domain($ph->{gDomain});
@@ -121,7 +119,6 @@ sub load{
 	shift;
 	my ($c,$tags) = @_;
 	my $s = &getGeneral();
-	$c =~ s/name="gEnable"/name="gEnable" checked="checked"/ if $s->{enable};
 	$c =~ s/name="gHPort"/name="gHPort" value="$s->{http_port}"/ if $s->{http_port};
 	$c =~ s/name="gIPort"/name="gIPort" value="$s->{icp_port}"/ if $s->{icp_port};
 	$c =~ s/name="gName"/name="gName" value="$s->{visible_hostname}"/ if $s->{visible_hostname};
