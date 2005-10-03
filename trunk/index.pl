@@ -57,7 +57,7 @@ if ( $sc->isLoggedIn() ){
 		#-- Status section --#
 		if(!$act){
 			my ($s, $r) = ($sc->param("status"), $sc->param("restart"));
-			print $cgi->redirect("sec.pl?act=status") unless $s;
+			print $cgi->redirect("sec.pl") unless $s;
 			$c = $stat->load($c, $s, $r) if $s;
 			$sc->clear(["status"])
 		} elsif( $act eq 'restart'){
