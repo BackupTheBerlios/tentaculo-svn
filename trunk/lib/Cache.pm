@@ -17,21 +17,25 @@ sub new{
 
 sub load{
 	shift;
-	my ($c,$tags) = @_;
+	my ($c, $tags) = @_;
 	my $mem = General->getCacheMem;
 	my $cda = Cache_Dir->getAll;
+
 	$c =~ s/name="cMem"/name="cMem" value="$mem"/ if $mem;
+
 	if ($cda){
 		my $dirs;
 		my ($table, $row) = (Template->read('cache_table'), Template->read('cache_row'));
 		foreach my $dir (@{$cda}){ $dirs .= &loadCacheRow($row, $dir); }
 		$table =~ s/<!-- CACHE_DIRS -->/$dirs/;
+		$table =~ s/<!-- SWAP -->/Create swap directories/ unless General->isSwapCreated();
 		$c =~ s/<!-- DIRS_TABLE -->/$table/;
 	} else {
 		my $no_dir = "<p>"._("There are not cache directories configured.")."</p>";
 		$no_dir .= '<div id="sectForm"><p><a href="index.pl?sect=cache&sub=dir&act=new">'._("Agregar nuevo directorio de Cache").'</a></p></div>';
 		$c =~ s/<!-- DIRS_TABLE -->/$no_dir/;
 	}
+
 	if($tags){
 		foreach (@{$tags}){
 			$c =~ s/for="cMem"/class="invalid" for="cMem"/ if $_ eq 'cMem';	
@@ -160,7 +164,7 @@ sub loadCachedir{
 
 sub result{
 	shift;
-	my ($r, $sub) = @_;
+	my $r = @_;
 	my ($t, $m);
 	my $res = Template->read('result');
 	if ($r){ 
@@ -172,6 +176,15 @@ sub result{
 	}
 	$res =~ s/<!-- TITLE -->/$t/;
 	$res =~ s/<!-- MESSAGE -->/$m/;
+	$res =~ s/SECTION/cache/g;
+	return $res;
+}
+
+sub swap{
+	shift;
+	my $swap = @_;
+	my $res = Template->read('result');
+	$res =~ s/<!-- TITLE -->/$swap/;
 	$res =~ s/SECTION/cache/g;
 	return $res;
 }

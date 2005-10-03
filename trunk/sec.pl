@@ -12,10 +12,12 @@ use POSIX;
 use SessionControl;
 use Logger;
 use I18N; 
+use General;
 
 # Squid vars
-my $scf = "/etc/squid/squid.conf";
-my $sqb = "/usr/sbin/squid";
+my $squ_cfg = "/etc/squid/squid.conf";
+my $squ_bin = "/usr/sbin/squid";
+my $squ_user = "proxy";
 
 my $cgi = new CGI;
 my $sc = SessionControl->new($cgi);
@@ -31,7 +33,7 @@ if ( $sc->isLoggedIn() ){
 		&getRoot() or Logger->error("Can't get root privileges");
 
 		# Compare the files to check if the system is controlling squid.
-		my $diff = `diff etc/squid.conf $scf`;
+		my $diff = `diff etc/squid.conf $squ_cfg`;
 		if($diff eq '' && $? == 0){ $s->{cha} = 0; } 
 		else { $s->{cha} = 1; }
 
@@ -45,16 +47,16 @@ if ( $sc->isLoggedIn() ){
 		my $res = { file => '', act => ''};
 		&getRoot() or Logger->error("Can't get root privileges");
 		# Make a backup the first time.
-		`cp $scf $scf.tent` if (-e $scf && !-e $scf."tent");
+		`cp $squ_cfg $squ_cfg.tent` if (-e $squ_cfg && !-e $squ_cfg."tent");
 
 		# An easy way: copy the configuration file and reload/start squid.
-		`cp -v etc/squid.conf $scf`;
+		`cp -v etc/squid.conf $squ_cfg`;
 		if ($? == 0){ $res->{file} .= _("Squid configuration file copied succesfully."); }
 		else { $res->file .= _("There was errors copying the squid configration file: $!"); }
 
 		# If squid is running, reconfigure it.
 		if ($stat && $stat->{squ}){ 
-			my $rec = `$sqb -k reconfigure`; 
+			my $rec = `$squ_bin -k reconfigure`; 
 			if ($? == 0){ $res->{act} .= _("Configuration reloaded succesfully. ");  } 
 			else { $res->{act} .= _("Error reloading the configuration: $!. "); }
 			$res->{act} .= _("Command output:").$rec."\n" if $rec;
@@ -71,6 +73,15 @@ if ( $sc->isLoggedIn() ){
 		&holdRoot($uid) or die "Can't hold root privileges";
 		$sc->param('restart', $res);
 		$sc->expires('restart', '+5s');
+	} elsif($act && $act eq 'swap') {
+		my $swap;
+		&getRoot() or Logger->error("Can't get root privileges");
+
+		# Create the swap directories running squid -z
+		`/etc/init.d/squid stop; $squ_bin -z`;
+		General->isSwapCreated(1) if  $? == 0;
+
+		&holdRoot($uid) or die "Can't hold root privileges";
 	}
 } else {
 	# An error. This script should not be called without being logged in.

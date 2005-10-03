@@ -2,6 +2,7 @@ package Status;
 
 use strict;
 use Logger;
+use General;
 
 sub new{
 	my $this = shift;
@@ -20,6 +21,9 @@ sub load{
 
 	my $squ = $s->{squ} ? _("running") : _("stopped");
 	$c =~ s/<!-- SQ-STATUS -->/$squ/;
+	
+	my $swap = "NO" unless General->isSwapCreated();
+	$c =~ s/<!-- SWAP -->/$swap/ if $swap;
 	
 	if($r){
 		my $title = "<h2>"._("Squid restart results")."</h2>";

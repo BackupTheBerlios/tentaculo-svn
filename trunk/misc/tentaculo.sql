@@ -27,11 +27,6 @@ CREATE TABLE acl (
   PRIMARY KEY  (id)
 ) AUTO_INCREMENT=1 ;
 
--- 
--- Volcar la base de datos para la tabla `acl`
--- 
-
-
 -- --------------------------------------------------------
 
 -- 
@@ -46,7 +41,7 @@ CREATE TABLE admin (
 ) AUTO_INCREMENT=2 ;
 
 -- 
--- Volcar la base de datos para la tabla `admin`
+-- Data for table `admin`
 -- 
 
 INSERT INTO admin VALUES (1, 'admin', '4d186321c1a7f0f354b297e8914ab240');
@@ -64,11 +59,6 @@ CREATE TABLE cache_dir (
   PRIMARY KEY  (id)
 ) AUTO_INCREMENT=1 ;
 
--- 
--- Volcar la base de datos para la tabla `cache_dir`
--- 
-
-
 -- --------------------------------------------------------
 
 -- 
@@ -83,11 +73,6 @@ CREATE TABLE cache_peer (
   PRIMARY KEY  (id)
 ) AUTO_INCREMENT=1 ;
 
--- 
--- Volcar la base de datos para la tabla `cache_peer`
--- 
-
-
 -- --------------------------------------------------------
 
 -- 
@@ -100,11 +85,6 @@ CREATE TABLE delay_access (
   aclname varchar(20) default NULL,
   delay_pool_id int(10) unsigned default NULL
 ) TYPE=MyISAM;
-
--- 
--- Volcar la base de datos para la tabla `delay_access`
--- 
-
 
 -- --------------------------------------------------------
 
@@ -119,11 +99,6 @@ CREATE TABLE delay_pool (
   PRIMARY KEY  (id)
 ) AUTO_INCREMENT=1 ;
 
--- 
--- Volcar la base de datos para la tabla `delay_pool`
--- 
-
-
 -- --------------------------------------------------------
 
 -- 
@@ -134,6 +109,7 @@ CREATE TABLE general (
   id int(11) NOT NULL default '1',
   enable tinyint(1) NOT NULL default '0',
   changed tinyint(1) NOT NULL default '0',
+  swap tinyint(1) NOT NULL default '0',
   http_port smallint(5) unsigned NOT NULL default '3128',
   icp_port smallint(5) unsigned NOT NULL default '3130',
   visible_hostname varchar(255) default NULL,
@@ -143,7 +119,7 @@ CREATE TABLE general (
 ) TYPE=MyISAM;
 
 -- 
--- Volcar la base de datos para la tabla `general`
+-- Data for table `general`
 -- 
 
-INSERT INTO general VALUES (1, 0, 0, 3128, 3130, NULL, NULL, '8M');
+INSERT INTO general VALUES (1, 0, 0, 0, 3128, 3130, NULL, NULL, '8M');

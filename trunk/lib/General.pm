@@ -7,7 +7,7 @@ use Template;
 use Data::Types qw(:int);
 
 General->table('general');
-General->columns(All => qw/id enable changed http_port visible_hostname append_domain icp_port cache_mem/);
+General->columns(All => qw/id enable changed swap http_port visible_hostname append_domain icp_port cache_mem/);
 
 sub new{
 	my $this = shift;
@@ -103,6 +103,18 @@ sub isChanged{
 		$g->update;
 	} 
 	return $g->changed();
+}
+
+sub isSwapCreated{
+	shift;
+	my $var;
+	$var = shift if @_;		# method called with a param.		
+	my $g = General->retrieve(1);
+	if (defined($var) && ($var == 1 || $var == 0)){
+		$g->swap($var);
+		$g->update;
+	} 
+	return $g->swap();
 }
 
 sub load{

@@ -30,23 +30,25 @@ sub changeCachedir{
 	my $cd = Cache_Dir->retrieve($ph->{cID});
 	$cd->directory($ph->{cDir}) if $cd;
 	$cd->size($ph->{cSize}) if $cd;
-	return $cd->update if ($cd && General->isChanged(1));
+	return $cd->update if ($cd && General->isChanged(1) && !General->isSwapCreated(0));
 	return 0;
 }
 
 sub addCachedir{
 	shift;
 	my $ph = shift;
-	return Cache_Dir->create({
+	my $cd = Cache_Dir->create({
 		directory => $ph->{cDir},
 		size => $ph->{cSize},
 	});
+	return $cd if ($cd && General->isChanged(1) && !General->isSwapCreated(0));
+	return 0;
 }
 
 sub delCachedir{
 	shift;
 	my $d = Cache_Dir->retrieve(shift);
-	return $d->delete() if $d;
+	return $d->delete() if ($d && General->isChanged(1) && !General->isSwapCreated(0));
 	return 0;
 }
 
