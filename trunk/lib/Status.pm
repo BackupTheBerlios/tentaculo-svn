@@ -15,13 +15,18 @@ sub load{
 	shift;
 	my ($c, $s, $r) = @_;
 
-	my $sys = $s->{sys} ? _("controlling squid") : _("not controlling squid");
-	$c =~ s/<!-- SYS-STATUS -->/$sys/;
+	my $sys = _("Not applied changes. Restart squid and apply the changes.") if $s->{cha} == 1;
+	$c =~ s/<!-- CHANGES -->/$sys/ if $sys;
 
 	my $squ = $s->{squ} ? _("running") : _("stopped");
 	$c =~ s/<!-- SQ-STATUS -->/$squ/;
 	
-	$c =~ s/<!-- RESTART -->/$r/ if $r;
+	if($r){
+		my $title = "<h2>"._("Squid restart results")."</h2>";
+		$c =~ s/<!-- RES-TITLE -->/$title/;
+		$c =~ s/<!-- RES-FILE -->/$r->{file}/ if $r->{file};
+		$c =~ s/<!-- RES-ACT -->/$r->{act}/ if $r->{act};
+	}
 
 	return $c;
 }

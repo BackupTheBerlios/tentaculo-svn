@@ -37,6 +37,13 @@ sub clear{
 	return $self->{session}->clear($variable);
 }
 
+sub expires{
+	my $self = shift;
+	my $variable = shift;
+	my $time = shift;
+	return $self->{session}->expires($variable,$time);
+}
+
 sub check{
 	my $self = shift;
 	my $ph = shift;

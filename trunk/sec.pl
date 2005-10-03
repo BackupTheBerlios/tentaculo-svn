@@ -11,11 +11,15 @@ use CGI;
 use POSIX;
 use SessionControl;
 use Logger;
+use I18N; 
+
+# Squid vars
+my $scf = "/etc/squid/squid.conf";
+my $sqb = "/usr/sbin/squid";
 
 my $cgi = new CGI;
 my $sc = SessionControl->new($cgi);
 $sc->startSession();		# Start a new session or recover an started one.
-my $scf = "/etc/squid/squid.conf";
 
 if ( $sc->isLoggedIn() ){
 	my $uid = POSIX::getuid();
@@ -23,25 +27,50 @@ if ( $sc->isLoggedIn() ){
 	my $stat = $sc->param('status');
 
 	if($act && $act eq 'status'){
-		my $s = { sys => 0, squ => 0};
+		my $s = { cha => 0, squ => 0};
 		&getRoot() or Logger->error("Can't get root privileges");
+
 		# Compare the files to check if the system is controlling squid.
-		$s->{sys} = 1 unless `diff etc/squid.conf $scf`;
+		my $diff = `diff etc/squid.conf $scf`;
+		if($diff eq '' && $? == 0){ $s->{cha} = 0; } 
+		else { $s->{cha} = 1; }
+
 		# Is squid running?
 		$s->{squ} = 1 if `pgrep squid`;
-		&holdRoot($uid) or die "Can't hold root privilegs";
+
+		&holdRoot($uid) or die "Can't hold root privileges";
+		Logger->message("System status: cha=$s->{cha}, squ=$s->{squ}");
 		$sc->param('status', $s);
 	} elsif($act && $act eq 'restart') {
+		my $res = { file => '', act => ''};
 		&getRoot() or Logger->error("Can't get root privileges");
 		# Make a backup the first time.
 		`cp $scf $scf.tent` if (-e $scf && !-e $scf."tent");
+
 		# An easy way: copy the configuration file and reload/start squid.
-		my $res = `cp -v etc/squid.conf $scf;`;
-		if ($stat && $stat->{squ}){ $res .= `squid -k reconfigure`; } # running, just reload
-		else {  $res .= `/etc/init.d/squid start`; }
+		`cp -v etc/squid.conf $scf`;
+		if ($? == 0){ $res->{file} .= _("Squid configuration file copied succesfully."); }
+		else { $res->file .= _("There was errors copying the squid configration file: $!"); }
+
+		# If squid is running, reconfigure it.
+		if ($stat && $stat->{squ}){ 
+			my $rec = `$sqb -k reconfigure`; 
+			if ($? == 0){ $res->{act} .= _("Configuration reloaded succesfully. ");  } 
+			else { $res->{act} .= _("Error reloading the configuration: $!. "); }
+			$res->{act} .= _("Command output:").$rec."\n" if $rec;
+		}
+
+		# If squid is stopped, start it.
+		else {  
+			my $rec .= `/etc/init.d/squid start`; 
+			if ($? == 0){ $res->{act} .= _("Squid started succesfully. ");  } 
+			else { $res->{act} .= _("Error starting squid: $!. ");  }
+			$res->{act} .= _("Command output").": $rec" if $rec;
+		}
+
 		&holdRoot($uid) or die "Can't hold root privileges";
-		Logger->message("Restarting squid result: $res");
 		$sc->param('restart', $res);
+		$sc->expires('restart', '+5s');
 	}
 } else {
 	# An error. This script should not be called without being logged in.
@@ -51,7 +80,6 @@ if ( $sc->isLoggedIn() ){
 print $cgi->redirect("index.pl");
 
 sub getRoot{
-	shift;
 	POSIX::setuid(0) or Logger->message($!);
 	delete @ENV{qw(IFS PATH CDPATH ENV BASH_ENV)};   # Make %ENV safer
 	return 1 if POSIX::getuid() == 0;
@@ -59,7 +87,6 @@ sub getRoot{
 }
 
 sub holdRoot{
-	shift;
 	my $uid = shift;
 	POSIX::setuid($uid);
 	return 1 if POSIX::getuid() == $uid;
