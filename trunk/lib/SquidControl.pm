@@ -68,10 +68,7 @@ sub acl {
 	$ret .= "# -----------------------------------------------------------\n";
 	$ret .= "#############################################################\n\n";
 	# Default values. Squid recommended.
-	$ret .= "acl all src 0.0.0.0/0.0.0.0\n";
 	$ret .= "acl manager proto cache_object\n";
-	$ret .= "acl localhost src 127.0.0.1/255.255.255.255\n";
-	$ret .= "acl to_localhost dst 127.0.0.0/8\n";
 	$ret .= "acl SSL_ports port 443 563	# https, snews\n";
 	$ret .= "acl SSL_ports port 873		# rsync\n";
 	$ret .= "acl Safe_ports port 80		# http\n";
@@ -89,6 +86,10 @@ sub acl {
 	$ret .= "acl Safe_ports port 901		# SWAT\n";
 	$ret .= "acl purge method PURGE\n";
 	$ret .= "acl CONNECT method CONNECT\n";
+	# Write a tag for each cache dir entrie.
+	my $acls = Acl->getAll();
+	if($acls){ for(@{$acls}){$ret .="acl ".$_->{name}." ".$_->{acltype}." ".$_->{aclstring}; }}
+	return $ret;
 }
 
 sub http_access {

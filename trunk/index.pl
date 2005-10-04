@@ -26,9 +26,11 @@ my $squc = SquidControl->new();
 # Per-section modules and their objects.
 use General;
 use Cache;
+use Acl;
 use Status;
 my $gen = General->new();
 my $cach = Cache->new();
+my $acl = Acl->new();
 my $stat = Status->new();
 
 # HTML Page variables. t = template. c = content (or template fill).
@@ -44,7 +46,7 @@ if ( $sc->isLoggedIn() ){
 	Logger->message("index.pl vars sect: $sect sub: $sub act: $act");
 	
 	# Valid content sections
-	my @csects = qw/general cache settings status/;
+	my @csects = qw/general cache acl settings status/;
 
 	# The admin page is the interface template used when the user is logged in.
 	$t = Template->read('admin');
@@ -102,6 +104,9 @@ if ( $sc->isLoggedIn() ){
 				$c = $cach->result($cach->delDir($id)) if $id;
 			}
 		}
+	} elsif ( $sect eq 'acl' ) {
+		#-- Status section --#
+		$c = $acl->load($c) unless $act;
 	} elsif ( $sect eq 'settings' ) {
 		#-- Settings section --#
 		if($sub eq 'password'){
