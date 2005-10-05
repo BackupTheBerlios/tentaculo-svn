@@ -139,9 +139,8 @@ sub delPeer{
 sub loadCacheRow{
 	my ($row,$dir) = @_;
 	$row =~ s/ID/$dir->{id}/g;
-	$row =~ s/<!-- NAME -->/$dir->{name}/;
-	$row =~ s/<!-- ACLTYPE -->/$dir->{acltype}/;
-	$row =~ s/<!-- ACLSTRING -->/$dir->{aclstring}/;
+	$row =~ s/<!-- DIR -->/$dir->{directory}/;
+	$row =~ s/<!-- SIZE -->/$dir->{size}/;
 	return $row;
 }
 

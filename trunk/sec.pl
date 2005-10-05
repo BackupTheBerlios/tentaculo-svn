@@ -31,7 +31,7 @@ if ( $sc->isLoggedIn() ){
 	&getRoot() or die "Can't get root privileges: $!";
 
 	# Compare the files to check if the system is controlling squid.
-	my $diff = `diff etc/squid.conf $squ_cfg`;
+	my $diff = `diff etc/squid.conf $squ_cfg 2>&1`;
 	if($diff eq '' && $? == 0){ $stat->{cha} = 0; } 
 	else { $stat->{cha} = 1; }
 
@@ -53,7 +53,7 @@ if ( $sc->isLoggedIn() ){
 
 		# If squid is running, reconfigure it.
 		if ($stat->{squ} == 1){ 
-			my $rec = `$squ_bin -k reconfigure`; 
+			my $rec = `$squ_bin -k reconfigure 2>&1`; 
 			if ($? == 0){ $res->{act} .= _("Configuration reloaded succesfully. ");  } 
 			else { $res->{act} .= _("Errors reloading the configuration: $!. "); }
 			$res->{act} .= _("Command output:").$rec."\n" if $rec;
@@ -61,7 +61,7 @@ if ( $sc->isLoggedIn() ){
 
 		# If squid is stopped, start it.
 		elsif ($stat->{squ} == 0) {  
-			my $rec .= `/etc/init.d/squid start`; 
+			my $rec .= `/etc/init.d/squid start 2>&1`; 
 			if ($? == 0){ $res->{act} .= _("Squid started succesfully. ");  } 
 			else { $res->{act} .= _("Error starting squid: $!. ");  }
 			$res->{act} .= _("Command output").": $rec" if $rec;

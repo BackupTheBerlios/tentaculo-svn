@@ -107,6 +107,13 @@ if ( $sc->isLoggedIn() ){
 	} elsif ( $sect eq 'acl' ) {
 		#-- Status section --#
 		$c = $acl->load($c) unless $act;
+		if ( $act eq 'new' ){
+			$c = $acl->newAcl();
+		} elsif ( $act eq 'add'){
+			my $err = $acl->validateAcl($phr);
+			$c = $acl->result($acl->addAcl($phr)) unless $err;
+			$c = $acl->newAcl($err) if $err;
+		}
 	} elsif ( $sect eq 'settings' ) {
 		#-- Settings section --#
 		if($sub eq 'password'){

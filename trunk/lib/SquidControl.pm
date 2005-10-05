@@ -31,11 +31,13 @@ sub header {
 
 sub general {
 	shift;
-	my ($ret, $g, @tags) = ('', '', ('http_port','icp_port', 'visible_hostname'));
+	my ($ret, $g);
+	my @tags = ('http_port', 'icp_port', 'visible_hostname', 'append_domain');
 	$ret  =	"# GENERAL OPTIONS\n";
 	$ret .= "# -----------------------------------------------------------\n";
 	$ret .= "#############################################################\n\n";
 	$g = General->getGeneral();
+	$g->{append_domain} = ".".$g->{append_domain};
 	foreach my $tag (@tags){  $ret .= &simpleTag($tag, $g->{$tag}) if $g->{$tag}; }
 	return $ret;
 }
@@ -88,7 +90,7 @@ sub acl {
 	$ret .= "acl CONNECT method CONNECT\n";
 	# Write a tag for each cache dir entrie.
 	my $acls = Acl->getAll();
-	if($acls){ for(@{$acls}){$ret .="acl ".$_->{name}." ".$_->{acltype}." ".$_->{aclstring}; }}
+	if($acls){ for(@{$acls}){$ret .="acl ".$_->{name}." ".$_->{acltype}." ".$_->{aclstring}."\n"; }}
 	return $ret;
 }
 

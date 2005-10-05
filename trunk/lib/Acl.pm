@@ -32,32 +32,35 @@ sub getAll{
 
 sub getAcl{
 	shift;
-	my $d = Acl->retrieve(shift);
-	return{	id => $d->id,
-		name => $d->name, 
-		acltype => $d->acltype, 
-		aclstring => $d->aclstring, 
-	};
+	my $a = Acl->retrieve(shift);
+	return{	id => $a->id,
+		name => $a->name, 
+		acltype => $a->acltype, 
+		aclstring => $a->aclstring, 
+	} if $a;
+	return 0;
 }
 
 sub changeAcl{
 	shift;
 	my $ph = shift;
-	my $cd = Acl->retrieve($ph->{cID});
-	$cd->name($ph->{cDir}) if $cd;
-	$cd->acltype($ph->{cSize}) if $cd;
-	return $cd->update if ($cd && General->isChanged(1) && !General->isSwapCreated(0));
+	my $dir = Acl->retrieve($ph->{cID});
+	$dir->name($ph->{aName}) if $dir;
+	$dir->acltype($ph->{aType}) if $dir;
+	$dir->aclstring($ph->{aString}) if $dir;
+	return $dir->update if ($dir && General->isChanged(1));
 	return 0;
 }
 
 sub addAcl{
 	shift;
 	my $ph = shift;
-	my $cd = Acl->create({
-		name => $ph->{cDir},
-		acltype => $ph->{cSize},
+	my $acl = Acl->create({
+		name => $ph->{aName},
+		acltype => $ph->{aType},
+		aclstring => $ph->{aString},
 	});
-	return $cd if ($cd && General->isChanged(1) && !General->isSwapCreated(0));
+	return $acl if ( $acl && General->isChanged(1) );
 	return 0;
 }
 
@@ -92,6 +95,61 @@ sub loadRow{
 	$row =~ s/<!-- ACLTYPE -->/$acl->{acltype}/;
 	$row =~ s/<!-- ACLSTRING -->/$acl->{aclstring}/;
 	return $row;
+}
+
+sub newAcl{
+	my ($self, $tags) = @_;
+	my $c = Template->read('newAcl');
+	if ($tags){
+		my $m = _("There was errrors validating the data for the new cache directory.");
+		foreach (@{$tags}){
+			$m .= _(" The entered name seems to be wrong.") if $_ eq 'aName';	
+			$m .= _(" The entered type seems to be wrong.") if $_ eq 'aType';	
+			$m .= _(" The entered string seems to be wrong.") if $_ eq 'aString';	
+		}
+		$c =~ s/<!-- MESSAGE -->/$m/;
+	}
+	return $c;
+}
+
+sub result{
+	shift;
+	my $r = @_;
+	my ($t, $m);
+	my $res = Template->read('result');
+	if ($r){ 
+		$t = _('Successful change'); 
+		$m = _('The ACL Configuration has been changed successfully.');
+	} else { 
+		$t = _('Unsuccessful change'); 
+		$m = _('There was a problem trying to apply the changes. Please try again.')
+	}
+	$res =~ s/<!-- TITLE -->/$t/;
+	$res =~ s/<!-- MESSAGE -->/$m/;
+	$res =~ s/SECTION/acl/g;
+	return $res;
+}
+
+sub validateAcl{
+	shift;
+	my $ph = shift;
+	my @tags;		# Invalid tags
+
+	# The name must be a word.
+	push(@tags,'aName') unless $ph->{aName} =~ /\w/;
+
+	# The type must be one of src, dst, port or proto.
+	push(@tags,'aType') unless $ph->{aType} =~ /src|dst|port|proto/;
+
+	# The string depends on the type.
+	if($ph->{aType} eq 'src' or $ph->{aType} eq 'dst'){
+	my $regexp =    '^((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}
+			(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$';
+		push(@tags,'aString') unless $ph->{aString} =~ /$regexp/x;
+	}
+
+	return \@tags if @tags;
+	return 0;
 }
 
 1;

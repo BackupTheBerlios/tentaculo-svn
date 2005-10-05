@@ -1,0 +1,31 @@
+<h1>Creación de una nueva ACL</h1>
+					<form action="index.pl?sect=acl" method="post">
+					<table id="sectForm"><fieldset>
+						<p><input type="hidden" name="aID" id="aID"/></p>
+						<tr>
+						<td><p><label for="aName">Nombre</label></p></td>
+						<td><p><input type="text" name="aName" id="aName"/></p></td>
+						</tr>
+						<tr>
+						<td><p><label for="aType">Tipo</label></p></td>
+						<td><p><select name="aType" id="aType"/>
+							<option>src
+							<option>dst
+							<option>port
+							<option>proto
+						</select></p></td>
+						</tr>
+						<tr>
+						<td><p><label for="aString">Cadena</label></p></td>
+						<td><p><input type="text" name="aString" id="aString"/></p></td>
+						</tr>
+						<tr>
+						<p><input type="hidden" name="act" value="add"/></p>
+					</fieldset>
+					<fieldset id="aSubmit">
+						<tr>
+						<td colspan="2" id="bSumbit"><p><input type="submit" name="aSubmitB" id="aSubmitB" value="Agregar ACL" /></p></td>
+						</tr>
+					</fieldset></table>
+					</form>
+					<!-- MESSAGE -->
