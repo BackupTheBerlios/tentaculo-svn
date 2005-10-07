@@ -4,6 +4,7 @@ use base 'DBIBase';
 use strict;
 use Logger;
 use General;
+use Data::Types qw(:int);
 
 Acl->table('acl');
 Acl->columns(All => qw/id name acltype aclstring/);
@@ -143,9 +144,19 @@ sub validateAcl{
 
 	# The string depends on the type.
 	if($ph->{aType} eq 'src' or $ph->{aType} eq 'dst'){
-	my $regexp =    '^((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}
-			(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$';
+		# If src or dst, the string must be an IP address or network.
+		my $regexp =    '^((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){3}
+				(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])
+				(\/(((0|255)\.){3}(0|255)|\d{1,2}))?$';
 		push(@tags,'aString') unless $ph->{aString} =~ /$regexp/x;
+	} elsif ($ph->{aType} eq 'port') {
+		my $port = $ph->{aString};
+		if($port =~ /^\d+$/){
+			$port = to_int($port);
+			push(@tags,'aString') if ($port < 1 || $port > 65535);
+		} else { push(@tags,'aString'); }
+	} elsif ($ph->{aType} eq 'proto'){
+		push(@tags,'aString') unless $ph->{aString} =~ /(cache_object|http|ftp)/;
 	}
 
 	return \@tags if @tags;
