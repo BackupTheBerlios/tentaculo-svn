@@ -4,7 +4,9 @@
 
 # Always use strict. Application modules are in the 'lib' directory.
 use strict;
-use lib './lib';
+my $path;
+if($0 =~ /(.*)index\.pl/){ $path = $1; }
+use lib $path.'/lib';
 
 # CGI stuff.
 use CGI;
@@ -63,6 +65,7 @@ if ( $sc->isLoggedIn() ){
 			$c = $stat->load($c, $s, $r) if $s;
 			$sc->clear(["status"])
 		} elsif( $act eq 'restart'){
+			Logger->message("Redirecting to sec.pl (restart)");
 			print $cgi->redirect("sec.pl?act=restart");
 		}
 	} elsif ( $sect eq 'general' ) {
@@ -149,4 +152,4 @@ $squc->writeFile() if $gen->isChanged() == 1;
 
 # Replace the content in the template and print it if exists, else log an error.
 $t =~ s/<!-- CONTENT -->/$c/ if ($t && $c);
-print $cgi->header(-cookie=>$sc->cookie),$t if $t; 
+print $cgi->header(-cookie=>$sc->cookie),$t if $t;
