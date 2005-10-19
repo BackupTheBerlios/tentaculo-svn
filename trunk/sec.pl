@@ -8,6 +8,9 @@ use lib './lib';
 
 # General system general modules.
 use CGI;
+use CGI::Carp qw(fatalsToBrowser warningsToBrowser);
+$CGI::POST_MAX = 1024 * 100;  	# 100K max. posts
+$CGI::DISABLE_UPLOADS = 1;  	# without uploads
 use POSIX;
 use SessionControl;
 use Logger;
@@ -15,6 +18,7 @@ use I18N;
 use General;
 
 # Squid vars
+my $loc_squ_cfg = "/var/www/html/tentaculo/etc/squid.conf";
 my $squ_cfg = "/etc/squid/squid.conf";
 my $squ_bin = "/usr/sbin/squid";
 my $squ_user = "proxy";
@@ -25,13 +29,14 @@ $sc->startSession();		# Start a new session or recover an started one.
 
 if ( $sc->isLoggedIn() ){
 	my $uid = POSIX::getuid();
-	my $act = $cgi->url_param('act');
+	my $act = $cgi->url_param('act') || 'status';
 	my $stat = { cha => 0, squ => 0};
 
+	Logger->message("sec.pl called. act: $act");
 	&getRoot() or die "Can't get root privileges: $!";
 
 	# Compare the files to check if the system is controlling squid.
-	my $diff = `diff etc/squid.conf $squ_cfg 2>&1`;
+	my $diff = `diff $loc_squ_cfg $squ_cfg 2>&1`;
 	if($diff eq '' && $? == 0){ $stat->{cha} = 0; } 
 	else { $stat->{cha} = 1; }
 
@@ -40,22 +45,26 @@ if ( $sc->isLoggedIn() ){
 
 	$sc->param('status', $stat);
 
-	if($act && $act eq 'restart') {
+	if($act eq 'restart') {
 		my $res = { file => '', act => ''};
 
 		# Make a backup the first time.
 		`cp $squ_cfg $squ_cfg.tent` if (-e $squ_cfg && !-e $squ_cfg."tent");
 
 		# An easy way: copy the configuration file and reload/start squid.
-		`cp -v etc/squid.conf $squ_cfg`;
-		if ($? == 0){ $res->{file} .= _("Squid configuration file copied succesfully."); }
-		else { $res->{file} .= _("Errors copying the squid configuration file: $!"); }
+		`cp -v $loc_squ_cfg $squ_cfg`;
+		if ($? == 0){ 
+			$res->{file} .= _("Squid configuration file copied succesfully."); 
+			Logger->message("Conf file copied");
+		} else { $res->{file} .= _("Errors copying the squid configuration file: $!"); }
 
 		# If squid is running, reconfigure it.
 		if ($stat->{squ} == 1){ 
 			my $rec = `$squ_bin -k reconfigure 2>&1`; 
-			if ($? == 0){ $res->{act} .= _("Configuration reloaded succesfully. ");  } 
-			else { $res->{act} .= _("Errors reloading the configuration: $!. "); }
+			if ($? == 0){ 
+				$res->{act} .= _("Configuration reloaded succesfully. ");  
+				Logger->message("Squid reconfigured");
+			} else { $res->{act} .= _("Errors reloading the configuration: $!. "); }
 			$res->{act} .= _("Command output:").$rec."\n" if $rec;
 		}
 
@@ -68,8 +77,7 @@ if ( $sc->isLoggedIn() ){
 		}
 
 		$sc->param('restart', $res);
-		$sc->expires('restart', '+5s');
-	} elsif($act && $act eq 'swap') {
+	} elsif( $act eq 'swap' ) {
 		# Create the swap directories running squid -z
 		`/etc/init.d/squid stop; $squ_bin -z`;
 		General->isSwapCreated(1) if  $? == 0;
@@ -80,6 +88,8 @@ if ( $sc->isLoggedIn() ){
 	Logger->error("sec.pl: the user is  not logged in. This should not happen!"); die $!;
 }
 
+$sc->flush();
+Logger->message("Redirecting to index.pl");
 print $cgi->redirect("index.pl");
 
 sub getRoot{
