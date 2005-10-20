@@ -4,9 +4,7 @@
 
 # Always use strict. Application modules are in the 'lib' directory.
 use strict;
-my $path;
-if($0 =~ /(.*)index\.pl/){ $path = $1; }
-use lib $path.'/lib';
+use lib './lib';
 
 # CGI stuff.
 use CGI;
@@ -66,7 +64,7 @@ if ( $sc->isLoggedIn() ){
 			$sc->clear(["status"])
 		} elsif( $act eq 'restart'){
 			Logger->message("Redirecting to sec.pl (restart)");
-			print $cgi->redirect("sec.pl?act=restart");
+			print $cgi->redirect("http://localhost/tentaculo/sec.pl?act=restart");
 		}
 	} elsif ( $sect eq 'general' ) {
 		#-- General section --#

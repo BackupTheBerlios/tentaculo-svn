@@ -22,7 +22,7 @@ CREATE TABLE access (
 CREATE TABLE acl (
   id int(10) unsigned NOT NULL auto_increment,
   name varchar(20) default NULL,
-  acltype char(1) default NULL,
+  acltype varchar(8) default NULL,
   aclstring varchar(255) default NULL,
   PRIMARY KEY  (id)
 ) AUTO_INCREMENT=1 ;
@@ -84,7 +84,7 @@ CREATE TABLE delay_access (
   ad char(1) default NULL,
   aclname varchar(20) default NULL,
   delay_pool_id int(10) unsigned default NULL
-) TYPE=MyISAM;
+);
 
 -- --------------------------------------------------------
 
@@ -115,10 +115,10 @@ CREATE TABLE general (
   append_domain varchar(255) default NULL,
   cache_mem varchar(20) NOT NULL default '8M',
   PRIMARY KEY  (id)
-) TYPE=MyISAM;
+);
 
 -- 
 -- Data for table `general`
 -- 
 
-INSERT INTO general VALUES (1, 0, 0, 3128, 3130, NULL, NULL, '8M');
+INSERT INTO general VALUES (1, 0, 0, 3128, 3130, NULL, NULL, '8 Mb');

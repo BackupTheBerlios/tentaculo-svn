@@ -20,14 +20,13 @@ sub new{
 
 sub cookie{
 	my $self = shift;
-	if(@_) { $self->{cookie} = shift; }
 	return $self->{cookie};
 }
 
 sub param{
 	my $self = shift;
 	my $variable = shift;
-	if (@_){ return $self->{session}->param($variable,shift);}
+	if (@_){ return $self->{session}->param($variable,shift) if $self->{session};}
 	else {my $ret = $self->{session}->param($variable) || '' ; return $ret; }
 }
 
@@ -44,6 +43,11 @@ sub expires{
 	return $self->{session}->expires($variable,$time);
 }
 
+sub flush{
+	my $self = shift;
+	return $self->{session}->flush();
+}
+
 sub check{
 	my $self = shift;
 	my $ph = shift;
@@ -54,7 +58,7 @@ sub check{
 		$self->{session}->expires('logged_in',"+10m");
 		$self->param('user_name',$u);
 		$self->param('user_id',$id);
-		Logger->message("User logged in with user name $u");
+		Logger->message("User logged in with user name $u, id: ".$self->{session}->id);
 		return 1;
 	} else { return 0; }
 }
@@ -72,22 +76,29 @@ sub changePass {
 }
 
 sub startSession{
-	my $self = shift;
-	my $cgi = $self->{cgi};
-	my $id = $cgi->cookie('CGISESSID') || $cgi->url_param('sid') || $cgi->param('sid') || undef;
+        my $self = shift;
+        my $cgi = $self->{cgi};
+        my $id = $cgi->cookie('CGISESSID') || $cgi->url_param('sid') || $cgi->param('sid') || undef;
 	$self->{session} = new CGI::Session(undef, $id, {Directory=>'/tmp'});
-	$self->{cookie} = $cgi->cookie(CGISESSID => $self->{session}->id);
-	Logger->message("NEW session. id=".$self->{session}->id) unless $id; # Log if new sessid
+        $self->{cookie} = $cgi->cookie(CGISESSID => $self->{session}->id());
+        Logger->message("NEW session. id=".$self->{session}->id) unless $id; # Log if new sessid
 }
 
 sub isLoggedIn{
 	my $self = shift;
-	return $self->{session}->param("logged_in");
+	if ($self->{session}){
+		Logger->message("Checking logged_in for id:".$self->{session}->id);
+		return $self->{session}->param("logged_in");
+	} else {
+		Logger->error('No $self->session');
+		return 0;
+	}
 }
 
 sub logOut{
 	my $self = shift;
 	$self->{session}->delete();
+	undef $self;
 }
 
 1;

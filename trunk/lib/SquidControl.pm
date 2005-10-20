@@ -5,6 +5,8 @@ use General;
 use Cache_Dir;
 use Logger;
 
+my $loc_squ_cfg = "/var/www/html/tentaculo/etc/squid.conf";
+
 sub new{
 	my $this = shift;
 	my $class = ref($this) || $this;
@@ -15,8 +17,9 @@ sub new{
 
 sub writeFile{
 	shift;
+	Logger->message("writeFile called");
 	my $cont = &header().&general().&cache().&acl().&http_access();
-	open(FILE,">etc/squid.conf") or die "Error: ".$!;
+	open(FILE,">$loc_squ_cfg") or die "Error: ".$!;
 	print FILE $cont;
 	close(FILE);
 	return General->isChanged(0);
@@ -37,7 +40,7 @@ sub general {
 	$ret .= "# -----------------------------------------------------------\n";
 	$ret .= "#############################################################\n\n";
 	$g = General->getGeneral();
-	$g->{append_domain} = ".".$g->{append_domain};
+	$g->{append_domain} = ".".$g->{append_domain} if $g->{append_domain};
 	foreach my $tag (@tags){  $ret .= &simpleTag($tag, $g->{$tag}) if $g->{$tag}; }
 	return $ret;
 }
@@ -70,7 +73,6 @@ sub acl {
 	$ret .= "# -----------------------------------------------------------\n";
 	$ret .= "#############################################################\n\n";
 	# Default values. Squid recommended.
-	$ret .= "acl manager proto cache_object\n";
 	$ret .= "acl SSL_ports port 443 563	# https, snews\n";
 	$ret .= "acl SSL_ports port 873		# rsync\n";
 	$ret .= "acl Safe_ports port 80		# http\n";
@@ -98,7 +100,7 @@ sub http_access {
 	shift;
 	my $ret;
 	# Only allow cachemgr access from localhost
-	$ret .= "http_access allow manager localhost\n";
+	$ret .= "\nhttp_access allow manager localhost\n";
 	$ret .= "http_access deny manager\n";
 	# Only allow purge requests from localhost
 	$ret .= "http_access allow purge localhost\n";
@@ -106,9 +108,13 @@ sub http_access {
 	$ret .= "# Deny requests to unknown ports\n";
 	$ret .= "http_access deny !Safe_ports\n";
 	# Deny CONNECT to other than SSL ports
-	$ret .= "http_access deny CONNECT !SSL_ports\n";
+	$ret .= "http_access deny CONNECT !SSL_ports\n\n";
 	# INSERT YOUR OWN RULE(S) HERE TO ALLOW ACCESS FROM YOUR CLIENTS
 	$ret .= "http_access allow localhost\n";
+	$ret .= "http_access allow asmet\n";
+	$ret .= "http_access allow chemonics\n";
+	$ret .= "http_access allow ha-cauca\n";
+	$ret .= "http_access allow andrespc\n";
 	# And finally deny all other access to this proxy
 	$ret .= "http_access deny all\n";
 	return $ret;

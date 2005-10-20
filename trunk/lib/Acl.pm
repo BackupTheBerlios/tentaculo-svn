@@ -147,7 +147,7 @@ sub validateAcl{
 		# If src or dst, the string must be an IP address or network.
 		my $regexp =    '^((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){3}
 				(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])
-				(\/(((0|255)\.){3}(0|255)|\d{1,2}))?$';
+				(\/(((0|255)\.){3}(0|128|255)|\d{1,2}))?$';
 		push(@tags,'aString') unless $ph->{aString} =~ /$regexp/x;
 	} elsif ($ph->{aType} eq 'port') {
 		my $port = $ph->{aString};

@@ -4,9 +4,11 @@ use strict;
 use Logger;
 use I18N;
 
+my $tmpl_dir = "/var/www/html/tentaculo/templates/";
+
 sub read{
 	shift;
-	my $file = "templates/".I18N->getLanguage()."/".shift().".html";
+	my $file = $tmpl_dir.I18N->getLanguage()."/".shift().".html";
 	Logger->message("file: $file");
 	open(FILE,"<$file") or die "Could not open file ".$file."Error: ".$!;
 	my @content=<FILE>;

@@ -3,11 +3,13 @@ package Logger;
 use strict;
 use Carp;
 
+my $log_dir = "/var/www/html/tentaculo/log";
+
 sub message {
 	# Writes a message log entry.
 	shift;
 	my $message = shift;
-	open REG, ">>log/messages" or die "Could not open file: ".$!;
+	open REG, ">>$log_dir/messages" or die "Could not open file: ".$!;
 	print REG localtime()." ".$message."\n";
 	close(REG) or die "Could not close file:  ".$!;
 }
@@ -17,7 +19,7 @@ sub error {
 	shift;
 	my $message = shift;
 	print STDERR "Logging error: ".$message;
-	open REG, ">>log/errors" or die "Could not open file:  ".$!;
+	open REG, ">>$log_dir/errors" or die "Could not open file:  ".$!;
 	print REG Carp::longmess(localtime()." ".$message."\n");
 	close(REG) or die "Could not close file: ".$!;
 }
