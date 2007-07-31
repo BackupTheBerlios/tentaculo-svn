@@ -3,7 +3,7 @@ package SessionControl;
 
 use strict;
 use CGI::Session;
-use Admin;
+use User;
 use Digest::MD5 'md5_hex';
 use Logger qw(message error);
 
@@ -52,7 +52,7 @@ sub check{
 	my $self = shift;
 	my $ph = shift;
 	my ($u, $p) = ($ph->{'logUser'}, md5_hex($ph->{'logPass'}) );
-	my $id = Admin->check($u,$p);
+	my $id = User->check($u,$p);
 	if ( $id ) {
 		$self->param('logged_in',1);
 		$self->{session}->expires('logged_in',"+10m");
@@ -69,7 +69,7 @@ sub changePass {
 	my ($o, $n1, $n2 ) = ($ph->{'oldPass'}, $ph->{'newPass'}, $ph->{'newPass2'});
 	my ($u, $id) = ( $self->param('user_name'), $self->param('user_id') );
 
-	if ( Admin->check($u, md5_hex($o)) && ($n1 eq $n2) && Admin->change($id, md5_hex($n1)) ){
+	if ( User->check($u, md5_hex($o)) && ($n1 eq $n2) && User->change($id, md5_hex($n1)) ){
 		Logger->message("Changed password for user $u");
 		return 1;
 	} else { return 0; } 

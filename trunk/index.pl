@@ -48,8 +48,8 @@ if ( $sc->isLoggedIn() ){
 	# Valid content sections
 	my @csects = qw/general cache acl settings status/;
 
-	# The admin page is the interface template used when the user is logged in.
-	$t = Template->read('admin');
+	# The page used when the user is logged in.
+	$t = Template->read('user');
 
 	# Read the template if the sect param is a valid content page.	
 	for (@csects) {  if ($sect eq $_) { $c = Template->read($sect); last; }  }

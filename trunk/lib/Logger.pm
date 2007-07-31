@@ -3,7 +3,7 @@ package Logger;
 use strict;
 use Carp;
 
-my $log_dir = "/var/www/html/tentaculo/log";
+my $log_dir = "log";
 
 sub message {
 	# Writes a message log entry.
