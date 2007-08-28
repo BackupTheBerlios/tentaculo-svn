@@ -2,3 +2,6 @@
 * New CHANGELOG :)
 * Admin module is now User module.
 * More simple directories name in Logger and Template modules.
+
+2007-08-28:
+* Admin.pm changes to User.pm
